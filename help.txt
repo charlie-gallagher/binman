@@ -1,0 +1,27 @@
+Utilities for manipulating bits, bytes, and words in a file.
+
+Usage:  binman [-ifFlWd] [-b offset] [-e ending] [-L length] [-w word] [-o file] file1 [file2]
+        binman [-b offset] [-e ending] [-L length] [-w word] [-O file] file1 [file2]
+
+    -b <offset>    Set offset (beginning)
+    -d    Dump file and exit. If -o/-O is given, output to file; otherwise, print to stdout as hex
+    -D    De-interlace words; takes every other byte, so true de-interlacing requires two passes
+    -e <ending>    Set final byte included (ending); see also -L
+    -F    Flip bytes in each word left-to-right
+    -f    Flip bits in each word left-to-right
+    -h    Display this help and exit
+    -i    Invert all bits
+    -l, --list    List nearest 20 lines and exit
+    -L    Set max length from offset; see also -e
+    -o <filename>    Save result to filename, overwriting if file exists
+    -O <filename>    Save result to filename, do not overwrite if file exists
+    -w <bytes>    Set number of bytes in a word
+    -W    Interlace (weave) words from file1 and file2
+
+Allow for compilation based on operating system. When built with windows, flags
+should be slashes; when unix-based, they should be dashes. Allow for multiple
+flags after a dash, e.g. -ifFl should invert the bits, flip the bits left-
+right, flip the bytes left-right, then list the result's nearest 20 lines.
+Spaces should not be necessary after arguments taking values, so -b50 should
+be the same as -b 50. All values should be assumed hex. Order of arguments
+matters for how operations are performed.
