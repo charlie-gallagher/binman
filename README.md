@@ -1,8 +1,7 @@
-# Binary Manipulation <img src="logo.png" align="right" height=100 />
+# Binary Manipulation <img src="logo.png" align="right" height=120 />
 
 
 
----
 &nbsp;
 
 
@@ -27,6 +26,8 @@ The following changes are immediately in progress:
 - Increase potential word sizes to include 8-bit and 64-bit, in addition to the current 16-bit and 32-bit versions.
 - Create dedicated file for deciding program flow.
 - Port to Linux. This will involve only a little work on the program proper, but a lot of work on the command-line argument parser.
+
+&nbsp;
 
 ---
 
