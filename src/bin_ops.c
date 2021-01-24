@@ -226,6 +226,10 @@ int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
         i++;
     }
 
+    rewind(fp1);
+    rewind(fp2);
+    rewind(fp3);
+
     return 0;
 }
 
