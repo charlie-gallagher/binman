@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     }
 
     if (OUTPUT_TYPE == WRITE && OUTPUT_FILE_NAME == NULL) {
-        fprintf(stderr, "\nMessage: Neither dump nor output file specified. No output produced.\n");
+        fprintf(stderr, "\nNOTE: Neither dump nor output file specified. No output produced.\n");
         fcloseall();
         return 0;
     }
