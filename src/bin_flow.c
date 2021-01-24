@@ -25,6 +25,8 @@ int run_binman(struct binman_struct *BM) {
                 printf("Inverting bits...\n");
                 #endif
                 invert_bits(INPUT_FILE);
+                if (INPUT_FILE2 != NULL)
+                    invert_bits(INPUT_FILE2);
                 break;
             }
             case F_BIT: {
@@ -32,6 +34,8 @@ int run_binman(struct binman_struct *BM) {
                 printf("Flipping bits...\n");
                 #endif
                 flip_bits(INPUT_FILE, WORD_SIZE);
+                if (INPUT_FILE2 != NULL)
+                    flip_bits(INPUT_FILE2);
                 break;
             }
             case F_BYTE: {
@@ -39,6 +43,8 @@ int run_binman(struct binman_struct *BM) {
                 printf("Flipping bytes...\n");
                 #endif
                 flip_bytes(INPUT_FILE, WORD_SIZE);
+                if (INPUT_FILE2 != NULL)
+                    flip_bytes(INPUT_FILE2);
                 break;
             }
             case LIST: {
@@ -46,6 +52,10 @@ int run_binman(struct binman_struct *BM) {
                 printf("LIST\n----\n");
                 #endif
                 bin_list(INPUT_FILE);
+                if (INPUT_FILE2 != NULL) {
+                    printf("File 2: \n");
+                    bin_list(INPUT_FILE2);
+                }
                 break;
             }
             case 0:
@@ -56,21 +66,6 @@ int run_binman(struct binman_struct *BM) {
 
     if (OUTPUT_TYPE == WRITE && OUTPUT_FILE_NAME == NULL) {
         fprintf(stderr, "\nNOTE: Neither dump nor output file specified. No output produced.\n");
-        // Cleaning up
-        fcloseall();
-        #ifdef DEBUG
-        printf("Removing %s\n", INPUT_FILE_TMP_NAME);
-        #endif
-        remove(INPUT_FILE_TMP_NAME);
-
-
-        if (INPUT_FILE2_TMP_NAME != NULL) {
-            #ifdef DEBUG
-            printf("Removing %s\n", INPUT_FILE2_TMP_NAME);
-            #endif
-            remove(INPUT_FILE2_TMP_NAME);
-        }
-        return 0;
     }
     else if (INPUT_FILE2 != NULL) {
         #ifdef DEBUG
@@ -86,13 +81,18 @@ int run_binman(struct binman_struct *BM) {
     }
 
 
-
     // Cleaning up
     fcloseall();
+    #ifdef DEBUG
     printf("Removing %s\n", INPUT_FILE_TMP_NAME);
+    #endif
     remove(INPUT_FILE_TMP_NAME);
+
+
     if (INPUT_FILE2_TMP_NAME != NULL) {
+        #ifdef DEBUG
         printf("Removing %s\n", INPUT_FILE2_TMP_NAME);
+        #endif
         remove(INPUT_FILE2_TMP_NAME);
     }
     return 0;

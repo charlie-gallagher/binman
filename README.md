@@ -10,7 +10,7 @@ The `binman` program inputs a file and performs various manipulations at the byt
 
 This is a sort of capstone project for me finishing a book on programming in C. I am not a computer scientist; my background is in economics and statistical computing. `binman` should not be considered a model of (or held to the standards of) good programming.
 
-I'm writing a manual for development. See `doc\man.md`. 
+I'm writing a manual for development. See `doc\man.md`.
 
 ### Compilation
 The program was written for Windows, but efforts will soon be aiming at making it compatible with Linux. See "Upcoming Changes." I compile using the Microsoft VS C/C++ Compiler with the following command.

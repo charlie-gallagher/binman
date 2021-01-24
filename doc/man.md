@@ -1,0 +1,26 @@
+# Overview
+`binman` inputs a file and performs various manipulations at the byte and word level. This file will explain the design of the operations and the design of the parser.
+
+## Flow of Information
+As a typical use-case, consider the following program call:
+
+```r
+binman /o output_file.exe /i /b 10 /e 20 input_file.exe
+```
+
+This inverts bits 10 through 20 (inclusive) and stores the result in `output_file.exe`. How does this go through the program? First, the command-line arguments are parsed, and the resulting values are stored in a structure. The structure has fields for all possible inputs. Second, the arguments are processed (i.e. checked for inconsistencies), and the output file `output_file.exe` and a copy of the input file are stored in the structure. The copy of the input file only contains 11 bytes (byte 10 through byte 20).
+
+Third, the various parts of the structure get passed around from operation to operation until there are no more operations to do. Here, that means the bytes in the temporary input file are inverted. Finally, the temporary input file is copied to `output_file.exe` and the program terminates.
+
+By distributing file information this way, the operations become simpler. They do not have to know how many bytes to change, nor do they have to handle the different ways to specify which bytes to act on in the file. They input a file and they manipulate the whole file.
+
+
+## Order of Operations
+Operations are generally performed in the order they are written. The strictly ordered operations are:
+
+- List
+- Invert bits
+- Reverse bits
+- Reverse bytes
+
+The (de)interleaving operations are always performed at the end. This is because they have special output routines. If interleaving, operations are done to both input files before they are combined. If de-interleaving, operations are done to original file before splitting. This order is a little arbitrary, as the outcome is the same regardless of when you (de)interleave. 
