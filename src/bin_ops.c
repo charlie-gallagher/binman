@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "bin_ops.h"
-#include "bin_print.h"
+#include "header\\bin_ops.h"
+#include "header\\bin_print.h"
 
 
 /* Invert all bits
