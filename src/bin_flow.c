@@ -35,7 +35,7 @@ int run_binman(struct binman_struct *BM) {
                 #endif
                 flip_bits(INPUT_FILE, WORD_SIZE);
                 if (INPUT_FILE2 != NULL)
-                    flip_bits(INPUT_FILE2);
+                    flip_bits(INPUT_FILE2, WORD_SIZE);
                 break;
             }
             case F_BYTE: {
@@ -44,7 +44,7 @@ int run_binman(struct binman_struct *BM) {
                 #endif
                 flip_bytes(INPUT_FILE, WORD_SIZE);
                 if (INPUT_FILE2 != NULL)
-                    flip_bytes(INPUT_FILE2);
+                    flip_bytes(INPUT_FILE2, WORD_SIZE);
                 break;
             }
             case LIST: {
