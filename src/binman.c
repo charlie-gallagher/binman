@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "src\\header\\bin_print.h"
-#include "src\\header\\bin_ops.h"
-#include "src\\header\\bin_arg_parse.h"
+#include "header\\bin_print.h"
+#include "header\\bin_ops.h"
+#include "header\\bin_arg_parse.h"
 
 //#define DEBUG
 
