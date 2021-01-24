@@ -5,8 +5,14 @@
 
 #define BIN_PRINT
 
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #define DUMP 0
 #define WRITE 1
+
+#define HELP_FILENAME "windows_help.txt"
 
 /* Print functions */
 int bin_out(FILE *tmp, FILE *output, char type); // Chooses program flow

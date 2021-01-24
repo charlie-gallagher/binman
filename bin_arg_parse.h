@@ -3,6 +3,10 @@
 #else
 #define CMDLINE
 
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 /* Symbolic constants for the ordered_flags element */
 #define I_BIT 1
 #define F_BIT 2

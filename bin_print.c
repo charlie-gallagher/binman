@@ -10,7 +10,10 @@ int bin_out(FILE *tmp, FILE *output, char type)
 {
     switch (type) {
         case DUMP: {
+            #ifdef DEBUG
             printf("Dumping bytes...\n");
+            #endif
+
             byte_to_hex(tmp);  // Convert tmp to hex chars
             break;
         }
@@ -150,7 +153,8 @@ int print_help(void)
     int c;
     FILE *help;
 
-    if ((help = fopen("windows_help.txt", "r")) == NULL)
+    // Help file location defined in bin_print.h
+    if ((help = fopen(HELP_FILENAME, "r")) == NULL)
     {
         fprintf(stderr, "Error opening help file.\n");
         return -1;
@@ -204,12 +208,16 @@ int deinterleave_out(FILE *fp1, FILE *fp2, FILE *fp3, int word, char type) {
         return -1;
     }
 
-    // Interleave and print
+    // Deinterleave and print
     deinterleave_words(fp1, tmp_out_a, tmp_out_b, word);
-    printf("Odd bytes: \n");
+    #ifdef DEBUG
+    printf("Odd bytes: \n-----------\n");
+    #endif
     bin_out(tmp_out_a, fp2, type);
 
-    printf("\nEven bytes: \n");
+    #ifdef DEBUG
+    printf("\nEven bytes: \n-----------\n");
+    #endif
     bin_out(tmp_out_b, fp3, type);
 
     fclose(tmp_out_a);

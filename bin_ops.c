@@ -2,9 +2,6 @@
 #include "bin_ops.h"
 #include "bin_print.h"
 
-#ifndef DEBUG
-#define DEBUG
-#endif
 
 /* Invert all bits
     Inverts all bits in file.
@@ -261,7 +258,7 @@ int interleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
         }
 
         i++;
-        
+
         #ifdef DEBUG
         printf("%d\n", i);
         #endif

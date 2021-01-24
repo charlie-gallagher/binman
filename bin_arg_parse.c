@@ -3,8 +3,6 @@
 #include <string.h>
 #include "bin_arg_parse.h"
 
-#define DEBUG
-
 /* Parse arguments from the command line
 
 */

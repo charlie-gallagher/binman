@@ -5,6 +5,10 @@
 
 #define BIN_OPS
 
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 /* Functions that work on a single file */
 int invert_bits(FILE *fp);
 int flip_bits(FILE *fp, int word);
