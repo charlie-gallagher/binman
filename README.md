@@ -1,4 +1,4 @@
-# Binary Manipulation <img src="logo.png" align="right" height=120 />
+# Binary Manipulation <img src="doc\logo.png" align="right" height=120 />
 
 
 
@@ -6,15 +6,15 @@
 
 
 ## Overview
-The `binman` program inputs a file and performs various manipulations at the byte and word level. Currently, only 16- and 32-bit word-sizes are valid. See 'Upcoming Changes'. In addition to single-file operations, multi-file interleave and de-interleave operations are also supported. These allow one to input two files and combine them, turning one file in to the odd words and the other into the even words of the final value.
+The `binman` program inputs a file and performs various manipulations at the byte and word level. Currently, only 16- and 32-bit word-sizes are valid. See 'Upcoming Changes'. In addition to single-file operations, multi-file interleave and de-interleave operations are also supported. These allow one to input two files and combine them, turning one file into the odd words and the other into the even words of the final file.
 
-This is a sort of capstone project for me finishing a book on programming in C. I am not a computer scientist; my background is in economics and statistical computing. `binman` should not be considered (or held to the expectations of) a model of good coding.
+This is a sort of capstone project for me finishing a book on programming in C. I am not a computer scientist; my background is in economics and statistical computing. `binman` should not be considered a model of (or held to the standards of) good programming.
 
 ### Compilation
-The program was written for Windows, and no efforts have yet been made to port it to Linux. See "Upcoming Changes." I compile using the Microsoft VS C/C++ Compiler with the following command.
+The program was written for Windows, but efforts will soon be aiming at making it compatible with Linux. See "Upcoming Changes." I compile using the Microsoft VS C/C++ Compiler with the following command.
 
 ```raw
-cl binman.c bin_arg_parse.c bin_ops.c bin_print.c
+cl binman.c src\bin_arg_parse.c src\bin_ops.c src\bin_print.c
 ```
 
 I have not compiled with `gcc`, and the code
