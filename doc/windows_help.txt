@@ -1,25 +1,25 @@
 Utilities for manipulating bits, bytes, and words in a file.
 
-Usage:  binman [\i] [\f] [\F] [\l] [\W] [\d] [\b [offset]] [\e [ending]]
-    [\L [length]] [\w [word]] [\o [file1] [file2]] file1 [file2]
+Usage:  binman [/i] [/f] [/F] [/l] [/W] [/d] [/b [offset]] [/e [ending]]
+    [/L [length]] [/w [word]] [/o [file1] [file2]] file1 [file2]
 
-    \b <offset>    Set offset (beginning)
-    \d    Dump file bytes. If \o or \O is given, output to file; otherwise,
+    /b <offset>    Set offset (beginning)
+    /d    Dump file bytes. If /o or /O is given, output to file; otherwise,
           print to stdout. Both write as ASCII hex characters.
-    \D    De-interleave words; requires two output files.
-    \e <ending>    Set final byte included (ending); see also \L
-    \F    Flip bytes in each word left-to-right
-    \f    Flip bits in each word left-to-right
-    \h    Display this help and exit
-    \i    Invert all bits
-    \l    List nearest 20 lines (may be done anywhere in operation sequence)
-    \L    Set max length from offset; see also \e
-    \o <filename> [<filename2>]    Save result to filename, overwriting if file
+    /D    De-interleave words; requires two output files.
+    /e <ending>    Set final byte included (ending); see also /L
+    /F    Flip bytes in each word left-to-right
+    /f    Flip bits in each word left-to-right
+    /h    Display this help and exit
+    /i    Invert all bits
+    /l    List nearest 20 lines (may be done anywhere in operation sequence)
+    /L    Set max length from offset; see also /e
+    /o <filename> [<filename2>]    Save result to filename, overwriting if file
           exists. Second filename only valid when de-interleaving.
-    \O <filename> [<filename2>]    Save result to filename, do not overwrite if
+    /O <filename> [<filename2>]    Save result to filename, do not overwrite if
           file exists. Second filename only valid when de-interleaving.
-    \w <bytes>    Set number of bytes in a word
-    \W    Interlace (weave) words from file1 and file2
+    /w <bytes>    Set number of bytes in a word
+    /W    Interlace (weave) words from file1 and file2
 
 
 Further Information
@@ -35,7 +35,7 @@ is given, in which case the ASII hex values of the file are sent to stdout. If
 `/d` and an output file are given, the ASCII hex is written to the output as
 text.
 
-`/o` and `/O` are greedy, so if you specify, for example, `binman \o f1 f2 f3`,
+`/o` and `/O` are greedy, so if you specify, for example, `binman /o f1 f2 f3`,
 you will get two output files and one input file, rather than one output file
 and two input files. Because of this, it's good practice to specify the output
 file(s) first.

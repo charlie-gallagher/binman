@@ -10,22 +10,29 @@ The `binman` program inputs a file and performs various manipulations at the byt
 
 This is a sort of capstone project for me finishing a book on programming in C. I am not a computer scientist; my background is in economics and statistical computing. `binman` should not be considered a model of (or held to the standards of) good programming.
 
+I'm writing a manual for development. See `doc\man.md`. 
+
 ### Compilation
 The program was written for Windows, but efforts will soon be aiming at making it compatible with Linux. See "Upcoming Changes." I compile using the Microsoft VS C/C++ Compiler with the following command.
 
 ```raw
-cl binman.c src\bin_arg_parse.c src\bin_ops.c src\bin_print.c
+cl src\binman.c src\bin_flow.c src\bin_arg_parse.c src\bin_ops.c src\bin_print.c
 ```
 
-I have not compiled with `gcc`, and the code
 
 ## Upcoming Changes
 The following changes are immediately in progress:
 
 - Expand "Debug Mode" using conditional preprocessor directives.
-- Increase potential word sizes to include 8-bit and 64-bit, in addition to the current 16-bit and 32-bit versions.
-- Create dedicated file for deciding program flow.
+- Improve behavior when number of bytes in file is not a mutliple of the word size.
+- Increase potential word sizes to include 8-bit and 64-bit, in addition to the current 16-bit and 32-bit versions. I will need to rewrite the bit and byte flipping functions, at a minimum. Interleaving already has the infrastructure to work, I just have to write conditions for the other two word sizes.
 - Port to Linux. This will involve only a little work on the program proper, but a lot of work on the command-line argument parser.
+
+### Bug and hotfix notes
+TODO:
+
+- Print a message when file size is not a multiple of the word size.
+- Print a message when (de)interleaving files of two different sizes.
 
 &nbsp;
 
