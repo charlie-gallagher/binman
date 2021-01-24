@@ -2,6 +2,10 @@
 #include "bin_ops.h"
 #include "bin_print.h"
 
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 /* Invert all bits
     Inverts all bits in file.
     Doesn't actually use 'word' argument. Included for consistency.
@@ -21,7 +25,10 @@ int invert_bits(FILE *fp)
     }
 
     // Invert all bits of original file and write to temporary file
+    #ifdef DEBUG
     printf("Flipping bits...\n");
+    #endif
+
     rewind(fp);
 
     while (1) {
@@ -30,7 +37,9 @@ int invert_bits(FILE *fp)
 
         fputc(~c, tmp);
     }
+    #ifdef DEBUG
     printf("Done.\n");
+    #endif
 
     // Copy temporary file back to original file
     // NOTE: bin_write takes care of rewinding files
@@ -95,7 +104,9 @@ int flip_bits(FILE *fp, int word)
 
     rewind(fp);
 
+    #ifdef DEBUG
     printf("Reversing bits in words...\n");
+    #endif
     while (1)
     {
         fread(c, sizeof(unsigned int), 1, fp);
@@ -105,7 +116,9 @@ int flip_bits(FILE *fp, int word)
         c[0] = reverse_bits_in_word(c[0], word);
         fwrite(c, sizeof(unsigned int), 1, tmp);
     }
+    #ifdef DEBUG
     printf("Done.\n");
+    #endif
 
     bin_write(tmp, fp);
 
@@ -158,7 +171,9 @@ int flip_bytes(FILE *fp, int word)
 
     rewind(fp);
 
+    #ifdef DEBUG
     printf("Reversing bytes in words...\n");
+    #endif
     while (1)
     {
         fread(c, sizeof(unsigned int), 1, fp);
@@ -168,7 +183,9 @@ int flip_bytes(FILE *fp, int word)
         c[0] = reverse_bytes_in_word(c[0], word);
         fwrite(c, sizeof(unsigned int), 1, tmp);
     }
+    #ifdef DEBUG
     printf("Done.\n");
+    #endif
 
     bin_write(tmp, fp);
 
@@ -184,7 +201,9 @@ int flip_bytes(FILE *fp, int word)
     remaining bytes in another file.
 */
 int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
+    #ifdef DEBUG
     printf("Starting de-interleave process...\n");
+    #endif
     int i;
     char word_array[4];
 
@@ -204,7 +223,9 @@ int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
             fwrite(word_array, 1, word, fp3);
 
         i++;
+        #ifdef DEBUG
         printf("%d\n", i);
+        #endif
     }
 
     return 0;
@@ -240,7 +261,10 @@ int interleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
         }
 
         i++;
+        
+        #ifdef DEBUG
         printf("%d\n", i);
+        #endif
     }
 
     return 0;
