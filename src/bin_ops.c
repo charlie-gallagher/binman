@@ -199,7 +199,7 @@ int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
     printf("Starting de-interleave process...\n");
     #endif
     int i;
-    char word_array[4];
+    char word_array[8];
 
     rewind(fp1);
     rewind(fp2);
@@ -217,9 +217,6 @@ int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
             fwrite(word_array, 1, word, fp3);
 
         i++;
-        #ifdef DEBUG
-        printf("%d\n", i);
-        #endif
     }
 
     return 0;
@@ -231,8 +228,8 @@ int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
 */
 int interleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
     int i;
-    char word_array_a[4];
-    char word_array_b[4];
+    char word_array_a[8];
+    char word_array_b[8];
 
     rewind(fp1);
     rewind(fp2);
@@ -241,24 +238,35 @@ int interleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
 
     i = 1;
     while(1) {
+        int n;
         if ((i % 2) == 0)
         {
-            fread(word_array_a, 1, word, fp1);
-            if (feof(fp1)) break;  // What does this break do?
+            n = fread(word_array_a, 1, word, fp1);
+            if (n != word) {
+                fprintf(stderr, "Warning: File size is not a multiple of word size. Final [%d] bytes dropped.\n", n);
+            }
+            if (feof(fp1)) {
+                fread(word_array_b, 1, word, fp2);  // throw away word from fp2
+                if (!feof(fp2))
+                    fprintf(stderr, "Warning: File 1 is shorter than file 2. Stopping after [%d] bytes.\n", i/2*word);
+                break;
+            }
             fwrite(word_array_a, 1, word, fp3);
         }
         else if ((i % 2) == 1)
         {
-            fread(word_array_b, 1, word, fp2);
-            if (feof(fp2)) break;
+            n = fread(word_array_b, 1, word, fp2);
+            if (n != word) {
+                fprintf(stderr, "Warning: File size is not a multiple of word size. Final [%d] bytes dropped.\n", n);
+            }
+            if (feof(fp2)) {
+                fprintf(stderr, "Warning: File 2 is shorter than file 1. Stopping after [%d] bytes.\n", i/2*word);
+                break;
+            }
             fwrite(word_array_b, 1, word, fp3);
         }
 
         i++;
-
-        #ifdef DEBUG
-        printf("%d\n", i);
-        #endif
     }
 
     return 0;
