@@ -198,7 +198,7 @@ int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
     #ifdef DEBUG
     printf("Starting de-interleave process...\n");
     #endif
-    int i;
+    int i, n;
     char word_array[8];
 
     rewind(fp1);
@@ -207,9 +207,16 @@ int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
 
     i = 1;
     while(1) {
-        fread(word_array, 1, word, fp1);
+        n = fread(word_array, 1, word, fp1);
+        if (n != word) {
+            fprintf(stderr, "Warning: File size is not a multiple of word size. Final [%d] bytes dropped.\n", n);
+        }
 
-        if (feof(fp1)) break;
+        if (feof(fp1)) {
+            if ((i % 2) == 0)
+                fprintf(stderr, "Warning: odd number of bytes de-interleaved.\n");
+            break;
+        }
 
         if ((i % 2) == 0)
             fwrite(word_array, 1, word, fp2);
