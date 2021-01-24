@@ -34,6 +34,8 @@ TODO:
 - Print a message when file size is not a multiple of the word size.
 - Print a message when (de)interleaving files of two different sizes.
 
+Both of these require a function to tell me the size of a file. 
+
 &nbsp;
 
 ---
