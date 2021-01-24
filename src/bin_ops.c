@@ -52,45 +52,49 @@ int invert_bits(FILE *fp)
 /* Reverse bits
     Fips bits in a word left to right
     Uses BitReverseTable256[] from bin_ops.h
-    16-bit handles 32 bits at a time (2 words at once) (may change)
 */
-unsigned int reverse_bits_in_word(unsigned int input, int word)
-{
-    unsigned int output;
 
-    switch(word) {
-        case 2: {
-            output = (BitReverseTable256[input & 0xff] << 8) |
-                (BitReverseTable256[(input >> 8) & 0xff]) |
-                (BitReverseTable256[(input >> 16) & 0xff] << 24) |
-                (BitReverseTable256[(input >> 24) & 0xff] << 16);
-            break;
-        }
-        case 4: {
-            output = (BitReverseTable256[input & 0xff] << 24) |
-                (BitReverseTable256[(input >> 8) & 0xff] << 16) |
-                (BitReverseTable256[(input >> 16) & 0xff] << 8) |
-                (BitReverseTable256[(input >> 24) & 0xff]);
-            break;
-        }
-        default: {
-            fprintf(stderr, "Error: word size not recognized. Setting output to zero.\n");
-            output = 0;
-            break;
-        }
+void reverse_bits_in_word(char c[], int word) {
+    int i;
+
+    for (i = 0; i < word; i++) {
+        c[i] = BitReverseTable256[c[i]];
     }
 
-    return output;
+    reverse_bytes_in_word(c, word);
 }
+
+/* Reverse bytes
+    Flips bytes in a word left to right
+*/
+void reverse_bytes_in_word(char c[], int word) {
+    static char out[8];
+    int i, j;
+
+    // Copy to buffer
+    for (i = 0, j = word - 1; i < word; i++, j--)
+        out[i] = c[j];
+
+    // Copy back to array
+    for (i = 0; i < word; i++) {
+        c[i] = out[i];
+    }
+}
+
 
 /* flip_bits
     Reverse bits for all words in a file
 */
 int flip_bits(FILE *fp, int word)
 {
-    unsigned int c[1];
+    unsigned char c[8];
     FILE *tmp;
     char *tmp_name;
+
+    if (word < 0 || word > 8) {
+        fprintf(stderr, "Invert bits: Invalid word size\n");
+        return -1;
+    }
 
     // Open temporary file
     tmp_name = tmpnam(NULL);
@@ -106,12 +110,18 @@ int flip_bits(FILE *fp, int word)
     #endif
     while (1)
     {
-        fread(c, sizeof(unsigned int), 1, fp);
+        int i;
+        if ((i = fread(c, 1, word, fp)) != word) {
+            #ifdef DEBUG
+            printf("Incomplete word!\n");
+            #endif
+            break;
+        }
 
         if (feof(fp)) break;
 
-        c[0] = reverse_bits_in_word(c[0], word);
-        fwrite(c, sizeof(unsigned int), 1, tmp);
+        reverse_bits_in_word(c, word);
+        fwrite(c, 1, word, tmp);
     }
     #ifdef DEBUG
     printf("Done.\n");
@@ -124,38 +134,13 @@ int flip_bits(FILE *fp, int word)
     return 0;
 }
 
-unsigned int reverse_bytes_in_word(unsigned int input, int word)
-{
-    unsigned int output;
 
-    switch(word) {
-        case 2: {
-            output = ((input & 0xff) << 8) |
-                ((input >> 8) & 0xff) |
-                (((input >> 16) & 0xff) << 24) |
-                (((input >> 24) & 0xff) << 16);
-            break;
-        }
-        case 4: {
-            output = ((input & 0xff) << 24) |
-                (((input >> 8) & 0xff) << 16) |
-                (((input >> 16) & 0xff) << 8) |
-                ((input >> 24) & 0xff);
-            break;
-        }
-        default: {
-            fprintf(stderr, "Error: word size not recognized. Setting output to zero.\n");
-            output = 0;
-            break;
-        }
-    }
-
-    return output;
-}
-
+/* Flip bytes
+    Reverses order of bytes in each word in a file
+*/
 int flip_bytes(FILE *fp, int word)
 {
-    unsigned int c[1];
+    unsigned char c[8];
     FILE *tmp;
     char *tmp_name;
 
@@ -173,12 +158,12 @@ int flip_bytes(FILE *fp, int word)
     #endif
     while (1)
     {
-        fread(c, sizeof(unsigned int), 1, fp);
+        fread(c, 1, word, fp);
 
         if (feof(fp)) break;
 
-        c[0] = reverse_bytes_in_word(c[0], word);
-        fwrite(c, sizeof(unsigned int), 1, tmp);
+        reverse_bytes_in_word(c, word);
+        fwrite(c, 1, word, tmp);
     }
     #ifdef DEBUG
     printf("Done.\n");

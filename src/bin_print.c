@@ -87,6 +87,8 @@ int byte_to_hex(FILE *fp)
         i++;
     }
 
+    fputc('\n', hex_tmp);
+
     // Copy temporary file original file
     bin_write(hex_tmp, fp);
 

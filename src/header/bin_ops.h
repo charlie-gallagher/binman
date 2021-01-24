@@ -6,7 +6,7 @@
 #define BIN_OPS
 
 #ifndef DEBUG
-//#define DEBUG
+// #define DEBUG
 #endif
 
 /* Functions that work on a single file */
@@ -14,9 +14,9 @@ int invert_bits(FILE *fp);
 int flip_bits(FILE *fp, int word);
 int flip_bytes(FILE *fp, int word);
 
-// Utility functions -- similar tasks, but have important differences
-unsigned int reverse_bits_in_word(unsigned int input, int word);
-unsigned int reverse_bytes_in_word(unsigned int input, int word);
+// Utility functions
+void reverse_bytes_in_word(char c[], int word);
+void reverse_bits_in_word(char c[], int word);
 
 /* Functions that work on two files */
 int interleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word);
