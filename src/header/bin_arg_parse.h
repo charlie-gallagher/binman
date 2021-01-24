@@ -33,7 +33,9 @@ struct binman_struct {
     char *input_file_name;
     char *second_input_file_name;
     FILE *input_copy;       // Must not be NULL
+    char *input_copy_name;
     FILE *second_input_copy;     // Second input if -W, else NULL
+    char *second_input_copy_name;
     char *output_file_name;
     char *second_output_file_name;
     FILE *output_file;      // NULL if none
@@ -66,6 +68,8 @@ struct binman_struct {
 #define SECOND_INPUT_FILE_NAME BM->second_input_file_name
 #define INPUT_FILE BM->input_copy
 #define INPUT_FILE2 BM->second_input_copy
+#define INPUT_FILE_TMP_NAME BM->input_copy_name
+#define INPUT_FILE2_TMP_NAME BM->second_input_copy_name
 #define OUTPUT_FILE_NAME BM->output_file_name
 #define SECOND_OUTPUT_FILE_NAME BM->second_output_file_name
 #define OUTPUT_FILE BM->output_file
@@ -89,7 +93,7 @@ int is_bin_terminal_input(int argc, char *argv[], int index);
 int is_duplicate_flag(char already_appeared[], char c, char index);
 int bin_open_input(struct binman_struct *BM);
 int bin_open_output(struct binman_struct *BM);
-FILE *copy_file(FILE *fp, long n_bytes);
+FILE *copy_file(FILE *fp, char *tmp_nam, long n_bytes);
 int is_executable(struct binman_struct *BM);
 int file_exists(char *filename);
 

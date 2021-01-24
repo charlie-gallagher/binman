@@ -542,11 +542,13 @@ int bin_open_input(struct binman_struct *BM) {
 
     // Copy to temporary file and store in struct
     fseek(in, start-1, SEEK_SET);
-    if ((INPUT_FILE = copy_file(in, length)) == NULL) {
+    char *tmp_nam = tmpnam(NULL);
+    if ((INPUT_FILE = copy_file(in, tmp_nam, length)) == NULL) {
         fprintf(stderr, "Error copying input file to structure.\n");
         fclose(in);
         return -1;
     }
+    INPUT_FILE_TMP_NAME = tmp_nam;
     fclose(in);
 
     // Optional second input file
@@ -557,11 +559,13 @@ int bin_open_input(struct binman_struct *BM) {
         }
 
         fseek(second_in, start, SEEK_SET);
-        if ((INPUT_FILE2 = copy_file(second_in, length)) == NULL) {
+        char *tmp_nam_2 = tmpnam(NULL);
+        if ((INPUT_FILE2 = copy_file(second_in, tmp_nam_2, length)) == NULL) {
             fprintf(stderr, "Error copying input file to structure.\n");
             fclose(second_in);
             return -1;
         }
+        INPUT_FILE2_TMP_NAME = tmp_nam_2;
         fclose(second_in);
     }
     return 0;
@@ -575,8 +579,7 @@ int bin_open_input(struct binman_struct *BM) {
     Returns a pointer to a temporary copy of the original file.
 */
 
-FILE *copy_file(FILE *fp, long n_bytes) {
-    char *tmp_nam = tmpnam(NULL);
+FILE *copy_file(FILE *fp, char *tmp_nam, long n_bytes) {
     char c;
     long i = 0;
     FILE *tmp;
@@ -585,7 +588,6 @@ FILE *copy_file(FILE *fp, long n_bytes) {
         return NULL;
     }
 
-    rewind(tmp);
 
     if (n_bytes != 0) {
         while (i <= n_bytes) {

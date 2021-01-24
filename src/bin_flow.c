@@ -56,7 +56,20 @@ int run_binman(struct binman_struct *BM) {
 
     if (OUTPUT_TYPE == WRITE && OUTPUT_FILE_NAME == NULL) {
         fprintf(stderr, "\nNOTE: Neither dump nor output file specified. No output produced.\n");
+        // Cleaning up
         fcloseall();
+        #ifdef DEBUG
+        printf("Removing %s\n", INPUT_FILE_TMP_NAME);
+        #endif
+        remove(INPUT_FILE_TMP_NAME);
+
+
+        if (INPUT_FILE2_TMP_NAME != NULL) {
+            #ifdef DEBUG
+            printf("Removing %s\n", INPUT_FILE2_TMP_NAME);
+            #endif
+            remove(INPUT_FILE2_TMP_NAME);
+        }
         return 0;
     }
     else if (INPUT_FILE2 != NULL) {
@@ -76,4 +89,11 @@ int run_binman(struct binman_struct *BM) {
 
     // Cleaning up
     fcloseall();
+    printf("Removing %s\n", INPUT_FILE_TMP_NAME);
+    remove(INPUT_FILE_TMP_NAME);
+    if (INPUT_FILE2_TMP_NAME != NULL) {
+        printf("Removing %s\n", INPUT_FILE2_TMP_NAME);
+        remove(INPUT_FILE2_TMP_NAME);
+    }
+    return 0;
 }
