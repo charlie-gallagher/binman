@@ -3,7 +3,7 @@
 #include "bin_ops.h"
 #include "bin_arg_parse.h"
 
-#define DEBUG
+//#define DEBUG
 
 
 
@@ -32,9 +32,11 @@ int main(int argc, char *argv[])
         exit(-1);
     }
 
+    #ifdef DEBUG
     printf("\n***********************************\n");
     printf("Binary Manipulation Program\n");
     printf("***********************************\n");
+    #endif
     int i = 0;
 
     if (DISPLAY_HELP == 1) {
@@ -46,22 +48,30 @@ int main(int argc, char *argv[])
     {
         switch(OFLAGS(i)) {
             case I_BIT: {
+                #ifdef DEBUG
                 printf("Inverting bits...\n");
+                #endif
                 invert_bits(INPUT_FILE);
                 break;
             }
             case F_BIT: {
+                #ifdef DEBUG
                 printf("Flipping bits...\n");
+                #endif
                 flip_bits(INPUT_FILE, WORD_SIZE);
                 break;
             }
             case F_BYTE: {
+                #ifdef DEBUG
                 printf("Flipping bytes...\n");
+                #endif
                 flip_bytes(INPUT_FILE, WORD_SIZE);
                 break;
             }
             case LIST: {
+                #ifdef DEBUG
                 printf("LIST\n----\n");
+                #endif
                 bin_list(INPUT_FILE);
                 break;
             }
@@ -77,7 +87,9 @@ int main(int argc, char *argv[])
         return 0;
     }
     else if (INPUT_FILE2 != NULL) {
+        #ifdef DEBUG
         printf("Interleave starting...\n");
+        #endif
         interleave_out(INPUT_FILE, INPUT_FILE2, OUTPUT_FILE, WORD_SIZE, OUTPUT_TYPE);
     }
     else if (OUTPUT_FILE2 != NULL) {

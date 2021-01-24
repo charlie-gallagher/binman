@@ -6,7 +6,7 @@
 #define BIN_OPS
 
 #ifndef DEBUG
-#define DEBUG
+//#define DEBUG
 #endif
 
 /* Functions that work on a single file */

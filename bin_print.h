@@ -6,7 +6,7 @@
 #define BIN_PRINT
 
 #ifndef DEBUG
-#define DEBUG
+//#define DEBUG
 #endif
 
 #define DUMP 0

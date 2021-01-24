@@ -4,7 +4,7 @@
 #define CMDLINE
 
 #ifndef DEBUG
-#define DEBUG
+//#define DEBUG
 #endif
 
 /* Symbolic constants for the ordered_flags element */
