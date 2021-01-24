@@ -91,7 +91,7 @@ int flip_bits(FILE *fp, int word)
     FILE *tmp;
     char *tmp_name;
 
-    if (word < 0 || word > 8) {
+    if (word <= 0 || word > 8) {
         fprintf(stderr, "Invert bits: Invalid word size\n");
         return -1;
     }
@@ -115,6 +115,9 @@ int flip_bits(FILE *fp, int word)
             #ifdef DEBUG
             printf("Incomplete word!\n");
             #endif
+            if (i != 0) {
+                fprintf(stderr, "Warning: File size is not a multiple of word size. Final [%d] bytes unchanged.\n", i);
+            }
             break;
         }
 
@@ -158,7 +161,16 @@ int flip_bytes(FILE *fp, int word)
     #endif
     while (1)
     {
-        fread(c, 1, word, fp);
+        int i;
+        if ((i = fread(c, 1, word, fp)) != word) {
+            #ifdef DEBUG
+            printf("Incomplete word!\n");
+            #endif
+            if (i != 0) {
+                fprintf(stderr, "Warning: File size is not a multiple of word size. Final [%d] bytes unchanged.\n", i);
+            }
+            break;
+        }
 
         if (feof(fp)) break;
 

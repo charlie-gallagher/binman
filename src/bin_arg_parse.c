@@ -417,6 +417,12 @@ int is_duplicate_flag(char *already_appeared, char c, char index) {
     number of files is given.
 */
 int is_executable(struct binman_struct *BM) {
+    // Word size checking
+    if (WORD_SIZE <= 0 || WORD_SIZE > 8) {
+        fprintf(stderr, "Error: invalid word size\n");
+        return -1;
+    }
+
     // Conflicts
     if (INTER_FILES == 1 && DEINTER_FILES == 1) {
         fprintf(stderr, "Error: cannot interleave and deinterleave in one program call\n");
