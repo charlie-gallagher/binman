@@ -36,7 +36,10 @@ struct binman_struct *bin_arg_parse(int argc, char *argv[])
 
     /* Decide what's a flag and what's an argument */
     for (i = 1; i < argc - 1; i++) {  // assume last argument is filename
+        #ifdef DEBUG
         printf("Input: %s\n", argv[i]);
+        #endif
+
         if (is_bin_flag(argc, argv, i)) {
             *pflags = argv[i];
             pflags++;
@@ -55,7 +58,9 @@ struct binman_struct *bin_arg_parse(int argc, char *argv[])
             i++;  // Skip next command line argument
         }
         else if (is_bin_terminal_input(argc, argv, i)) {
+            #ifdef DEBUG
             printf("Second input detected.\n");
+            #endif
             input_file_name = argv[argc-2];
             second_input_file_name = argv[argc-1];
         }
@@ -277,7 +282,7 @@ int parse_params(struct binman_struct *BM, char *param[10][3]) {
                 break;
             }
             default: {
-                fprintf(stderr, "Warning: Unknown argument name  [%c\n]", p);
+                fprintf(stderr, "Warning: Unknown argument name  [%c]\n", p);
                 return -1;
             }
         }
