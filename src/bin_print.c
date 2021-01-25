@@ -1,20 +1,24 @@
 #include <stdio.h>
 #include "header\\bin_print.h"
 
+
 /* OUTPUT_FILE
 
     Writes a file to a stream. If type is DUMP, convert to hex characters
     rather than raw bytes.
 */
-int bin_out(FILE *tmp, FILE *output, char type)
+int bin_out(FILE *input, FILE *output, char type)
 {
     switch (type) {
         case DUMP: {
-            #ifdef DEBUG
-            printf("Dumping bytes...\n");
-            #endif
+                        #ifdef DEBUG
+                        printf("Dumping bytes...\n");
+                        #endif
 
-            byte_to_hex(tmp);  // Convert tmp to hex chars
+            byte_to_hex(input);  // Convert tmp to hex chars
+                        #ifdef DEBUG
+                        printf("Converted to hex successfully\n");
+                        #endif
             break;
         }
         case WRITE: break;
@@ -25,10 +29,12 @@ int bin_out(FILE *tmp, FILE *output, char type)
     }
 
     // Write to output (either file or stdout)
-    if (bin_write(tmp, output) != 0) {
+    if (bin_write(input, output) != 0) {
         fprintf(stderr, "Error writing to output file.\n");
         return -2;
     }
+    rewind(input);
+    rewind(output);
 
     return 0;
 }
@@ -53,18 +59,21 @@ int bin_write(FILE *fp, FILE *out)
             break;
         fputc(c, out);
     }
+
+    rewind(fp);
+    rewind(out);
     return 0;
 }
 
 
 int byte_to_hex(FILE *fp)
 {
-    char *hex_tmp_name;
+    char hex_tmp_name[L_tmpnam];
     FILE *hex_tmp;
     int c, i;       // i = number of bytes written
 
     // Make temporary file
-    hex_tmp_name = tmpnam(NULL);
+    tmpnam(hex_tmp_name);
 
     if ((hex_tmp = fopen(hex_tmp_name, "wb+")) == NULL) {
         fprintf(stderr, "Error opening temporary file.\n");
@@ -73,9 +82,11 @@ int byte_to_hex(FILE *fp)
 
     // Store hex output in temporary file
     rewind(fp);  // Ensure whole file is read
+
     i = 1;
     while (1) {
         c = fgetc(fp);
+
         if (feof(fp)) break;
 
         fprintf(hex_tmp, "%02x ", c);
@@ -84,6 +95,9 @@ int byte_to_hex(FILE *fp)
         if (i % 16 == 0) {
             fputc('\n', hex_tmp);
         }
+        #ifdef DEBUG
+        printf("%d\n", i);
+        #endif
         i++;
     }
 
@@ -170,15 +184,18 @@ int print_help(void)
 
 
 /* Interleave and print or write
-    fp1 : Odd byte file
-    fp2 : Even byte file
-    fp3 : Output file
-    type: Output type (DUMP or WRITE)
+
+    fp_odd  : Odd byte file
+    fp_even : Even byte file
+    fp_out  : Output file
+    type    : Output type (DUMP or WRITE)
 */
-int interleave_out(FILE *fp1, FILE *fp2, FILE *fp3, int word, char type) {
+int interleave_out(FILE *fp_odd, FILE *fp_even, FILE *fp_out, int word, char type) {
     // Open temporary file
     FILE *tmp_out;
-    char *tmp_name = tmpnam(NULL);
+    char tmp_name[L_tmpnam];
+
+    tmpnam(tmp_name);
 
     if ((tmp_out = fopen(tmp_name, "wb+")) == NULL) {
         fprintf(stderr, "Interleave out: Error opening temporary file.\n");
@@ -186,8 +203,8 @@ int interleave_out(FILE *fp1, FILE *fp2, FILE *fp3, int word, char type) {
     }
 
     // Interleave and print
-    interleave_words(fp1, fp2, tmp_out, word);
-    bin_out(tmp_out, fp3, type);
+    interleave_words(fp_odd, fp_even, tmp_out, word);
+    bin_out(tmp_out, fp_out, type);
 
     fclose(tmp_out);
     remove(tmp_name);
@@ -195,32 +212,36 @@ int interleave_out(FILE *fp1, FILE *fp2, FILE *fp3, int word, char type) {
     return 0;
 }
 
-int deinterleave_out(FILE *fp1, FILE *fp2, FILE *fp3, int word, char type) {
+/* Deinterleave and print
+
+    fp_in   : Input
+    fp_odd  : Odd word output
+    fp_even : Even word output
+    word    : Word size in bytes
+    type    : Output type (DUMP or WRITE)
+*/
+int deinterleave_out(FILE *fp_in, FILE *fp_odd, FILE *fp_even, int word, char type) {
     // Open two temporary files
     FILE *tmp_out_a, *tmp_out_b;
-    char *tmp_name_a = tmpnam(NULL);
-    char *tmp_name_b = tmpnam(NULL);
+    char tmp_name_a[L_tmpnam];
+    char tmp_name_b[L_tmpnam];
 
+    tmpnam(tmp_name_a);
     if ((tmp_out_a = fopen(tmp_name_a, "wb+")) == NULL) {
         fprintf(stderr, "Interleave out: Error opening temporary file.\n");
         return -1;
     }
+
+    tmpnam(tmp_name_b);
     if ((tmp_out_b = fopen(tmp_name_b, "wb+")) == NULL) {
         fprintf(stderr, "Interleave out: Error opening temporary file.\n");
         return -1;
     }
 
     // Deinterleave and print
-    deinterleave_words(fp1, tmp_out_a, tmp_out_b, word);
-    #ifdef DEBUG
-    printf("Odd bytes: \n-----------\n");
-    #endif
-    bin_out(tmp_out_a, fp2, type);
-
-    #ifdef DEBUG
-    printf("\nEven bytes: \n-----------\n");
-    #endif
-    bin_out(tmp_out_b, fp3, type);
+    deinterleave_words(fp_in, tmp_out_a, tmp_out_b, word);
+    bin_out(tmp_out_a, fp_odd, type);
+    bin_out(tmp_out_b, fp_even, type);
 
     fclose(tmp_out_a);
     fclose(tmp_out_b);

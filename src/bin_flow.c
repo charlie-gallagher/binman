@@ -4,6 +4,7 @@
 #include "header\\bin_arg_parse.h"
 #include "header\\bin_flow.h"
 
+
 int run_binman(struct binman_struct *BM) {
     #ifdef DEBUG
     printf("\n***********************************\n");
@@ -74,6 +75,11 @@ int run_binman(struct binman_struct *BM) {
         interleave_out(INPUT_FILE, INPUT_FILE2, OUTPUT_FILE, WORD_SIZE, OUTPUT_TYPE);
     }
     else if (OUTPUT_FILE2 != NULL) {
+        #ifdef DEBUG
+        printf("Deinterleave starting...\n");
+        printf("Output file 1: %s\n", OUTPUT_FILE_NAME);
+        printf("Output file 2: %s\n", SECOND_OUTPUT_FILE_NAME);
+        #endif
         deinterleave_out(INPUT_FILE, OUTPUT_FILE, OUTPUT_FILE2, WORD_SIZE, OUTPUT_TYPE);
     }
     else {

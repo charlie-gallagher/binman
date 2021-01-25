@@ -20,7 +20,7 @@ Usage:  binman [/i] [/f] [/F] [/l] [/W] [/d] [/b [offset]] [/e [ending]]
     /O <filename> [<filename2>]    Save result to filename, do not overwrite if
           file exists. Second filename only valid when de-interleaving.
     /w <bytes>    Set number of bytes in a word (from 1 to 8).
-    /W    Interlace (weave) words from file1 and file2
+    /W    Interleave words from file1 and file2; requires two input files.
 
 
 Further Information

@@ -191,15 +191,19 @@ int flip_bytes(FILE *fp, int word)
 
 
 /* Deinterleave words
-    Takes one file and places every other byte in one output file, the
-    remaining bytes in another file.
+    Takes one file and places the odd words in one file, the even words in the other.
+
+    fp1     : Input file
+    fp2     : Output 1 (odd bytes)
+    fp3     : Output 2 (even bytes)
+    word    : Word size in bytes
 */
 int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
     #ifdef DEBUG
     printf("Starting de-interleave process...\n");
     #endif
     int i, n;
-    char word_array[8];
+    char word_array[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
     rewind(fp1);
     rewind(fp2);
@@ -210,21 +214,45 @@ int deinterleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word) {
         n = fread(word_array, 1, word, fp1);
         if (n != word) {
             fprintf(stderr, "Warning: File size is not a multiple of word size. Final [%d] bytes dropped.\n", n);
+            #ifdef DEBUG
+            printf("N != word at iteration %d\n", i);
+            #endif
         }
+
+        #ifdef DEBUG
+        printf("%d [%02x %02x %02x %02x %02x %02x %02x %02x]\n", i, word_array[0], word_array[1], word_array[2], word_array[3], word_array[4], word_array[5], word_array[6], word_array[7]);
+        #endif
 
         if (feof(fp1)) {
             if ((i % 2) == 0)
-                fprintf(stderr, "Warning: odd number of bytes de-interleaved.\n");
+                fprintf(stderr, "Warning: odd number of words de-interleaved.\n");
+
+            #ifdef DEBUG
+            printf("Breaking at iteration %d\n", i);
+            #endif
+
             break;
         }
 
-        if ((i % 2) == 0)
-            fwrite(word_array, 1, word, fp2);
-        else if ((i % 2) == 1)
-            fwrite(word_array, 1, word, fp3);
+
+        if ((i % 2) == 1) {
+            n = fwrite(word_array, 1, word, fp2);
+            #ifdef DEBUG
+            printf("Bytes written to fp3: %d\n", n);
+            printf("Odd: iteration %d [%02x %02x %02x %02x]\n", i, word_array[0], word_array[1], word_array[2], word_array[3]);
+            #endif
+        }
+        else if ((i % 2) == 0) {
+            n = fwrite(word_array, 1, word, fp3);
+            #ifdef DEBUG
+            printf("Bytes written to fp2: %d\n", n);
+            printf("Even: iteration %d [%02x %02x %02x %02x]\n", i, word_array[0], word_array[1], word_array[2], word_array[3]);
+            #endif
+        }
 
         i++;
     }
+
 
     rewind(fp1);
     rewind(fp2);

@@ -15,7 +15,7 @@
 #define HELP_FILENAME "doc\\windows_help.txt"
 
 /* Print functions */
-int bin_out(FILE *tmp, FILE *output, char type); // Chooses program flow
+int bin_out(FILE *input, FILE *output, char type); // Chooses program flow
 int interleave_out(FILE *fp1, FILE *fp2, FILE *fp3, int word, char type);
 int deinterleave_out(FILE *fp1, FILE *fp2, FILE *fp3, int word, char type);
 int bin_write(FILE *fp, FILE *out);  // Copies fp to out
