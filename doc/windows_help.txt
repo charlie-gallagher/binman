@@ -32,7 +32,7 @@ operation.
 
 The final argument is assumed to be a filename unless `/?` or `/h` is given as
 only argument. By default, the output is not sent anywhere unless `/d` (dump)
-is given, in which case the ASII hex values of the file are sent to stdout. If
+is given, in which case the ASCII hex values of the file are sent to stdout. If
 `/d` and an output file are given, the ASCII hex is written to the output as
 text.
 
