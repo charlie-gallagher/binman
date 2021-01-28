@@ -2,3 +2,6 @@ notes.md
 *.obj
 *.exe
 command_line/**
+*.swp
+obj/
+obj/*

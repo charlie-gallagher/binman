@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "header\\bin_print.h"
-#include "header\\bin_error.h"
+#include <bin_print.h>
+#include <bin_error.h>
 
 
 /* OUTPUT_FILE
