@@ -66,7 +66,7 @@ struct binman_struct *bin_arg_parse(int argc, char *argv[])
             second_input_file_name = argv[argc-1];
         }
         else {
-            fprintf(stderr, "Illegal argument.\n");
+            error_msg("Illegal argument");
             return NULL;
         }
     }
@@ -80,12 +80,12 @@ struct binman_struct *bin_arg_parse(int argc, char *argv[])
 
     /* Parse flags and parameters, checking for errors */
     if (parse_flags(&BM, flags) != 0) {
-        fprintf(stderr, "Error parsing flags: Invalid flag\n");
+        error_msg("Invalid flag");
         return NULL;
     }
 
     if (parse_params(&BM, params) != 0) {
-        fprintf(stderr, "Error parsing parameters: Invalid flag\n");
+        error_msg("Invalid flag");
         return NULL;
     }
 
@@ -112,19 +112,19 @@ int process_flags_and_params(struct binman_struct *BM) {
 
     // Check executability of struct
     if (is_executable(BM) != 0) {
-        fprintf(stderr, "Error interpreting commands.\n");
+        error_msg("process_flags_and_params");
         return -1;
     }
 
     // Open output file(s) and copy to struct
     if (bin_open_output(BM) != 0) {
-        fprintf(stderr, "Error opening output file(s)\n");
+        error_msg("process_flags_and_params");
         return -1;
     }
 
     // Open input file(s) and copy to struct
     if (bin_open_input(BM) != 0) {
-        fprintf(stderr, "Error opening input file(s)\n");
+        error_msg("process_flags_and_params");
         return -1;
     }
 
@@ -205,7 +205,7 @@ int parse_flags(struct binman_struct *BM, char *flags[]) {
                 break;
             }
             default: {
-                fprintf(stderr, "Warning: Unknown flag  %c\n", f);
+                error_msg_arg("Unknown flag", f);
                 return -1;
             }
         }
@@ -283,7 +283,7 @@ int parse_params(struct binman_struct *BM, char *param[10][3]) {
                 break;
             }
             default: {
-                fprintf(stderr, "Warning: Unknown argument name  [%c]\n", p);
+                error_msg_arg("Unkown argument", p);
                 return -1;
             }
         }
@@ -420,46 +420,46 @@ int is_duplicate_flag(char *already_appeared, char c, char index) {
 int is_executable(struct binman_struct *BM) {
     // Word size checking
     if (WORD_SIZE <= 0 || WORD_SIZE > 8) {
-        fprintf(stderr, "Error: invalid word size\n");
+        error_msg("invalid word size");
         return -1;
     }
 
     // Conflicts
     if (INTER_FILES == 1 && DEINTER_FILES == 1) {
-        fprintf(stderr, "Error: cannot interleave and deinterleave in one program call\n");
+        error_msg("cannot interleave and deinterleave in one program call");
         return -1;
     }
 
     if (SECOND_INPUT_FILE_NAME != NULL && SECOND_OUTPUT_FILE_NAME != NULL) {
-        fprintf(stderr, "Error: cannot have two input files and two output files\n");
+        error_msg("cannot have two input files and two output files");
         return -1;
     }
 
     // Requirements for input files
     if (INTER_FILES == 1 && SECOND_INPUT_FILE_NAME == NULL) {
-        fprintf(stderr, "Error: must have two open files to interleave\n");
+        error_msg("must have two open files to interleave");
         return -1;
     }
     if (INTER_FILES == 0 && SECOND_INPUT_FILE_NAME != NULL) {
-        fprintf(stderr, "Error: two input files specified, but no interleave\n");
+        error_msg("two input files specified, but not interleaving");
         return -1;
     }
     if (INTER_FILES == 1 && SECOND_OUTPUT_FILE_NAME != NULL) {
-        fprintf(stderr, "Error: Interleave specified but two outputs given\n");
+        error_msg("interleave specified but two outputs given");
         return -1;
     }
 
     // Requirements for output files
     if (DEINTER_FILES == 1 && SECOND_OUTPUT_FILE_NAME == NULL) {
-        fprintf(stderr, "Error: Must have two output files to de-interleave\n");
+        error_msg("must have two output files to de-interleave");
         return -1;
     }
     if (DEINTER_FILES == 0 && SECOND_OUTPUT_FILE_NAME != NULL) {
-        fprintf(stderr, "Error: Two output files specified, but no de-interleave\n");
+        error_msg("two output files specified, but no deinterleave");
         return -1;
     }
     if (DEINTER_FILES == 1 && SECOND_INPUT_FILE_NAME != NULL) {
-        fprintf(stderr, "Error: De-interleave specified but two inputs given\n");
+        error_msg("de-interleave specified but two inputs given");
         return -1;
     }
 
@@ -483,20 +483,22 @@ int bin_open_output(struct binman_struct *BM) {
     if (FILE_OVERWRITE == 0) {
         // Check first file
         if (file_exists(OUTPUT_FILE_NAME) == 1) {
-            fprintf(stderr, "Error: cannot overwrite %s\n", OUTPUT_FILE_NAME);
+            error_msg("bin_open_output");
+            fprintf(stderr, "Cannot overwrite %s\n", OUTPUT_FILE_NAME);
             return -1;
         }
         // Check second file (if exists)
         if (SECOND_OUTPUT_FILE_NAME != NULL) {
             if (file_exists(SECOND_OUTPUT_FILE_NAME) == 1) {
-                fprintf(stderr, "Error: Cannot overwrite %s\n", SECOND_OUTPUT_FILE_NAME);
+                error_msg("bin_open_output");
+                fprintf(stderr, "Cannot overwrite %s\n", SECOND_OUTPUT_FILE_NAME);
                 return -1;
             }
         }
     }
 
     if ((out = fopen(OUTPUT_FILE_NAME, output_type)) == NULL) {
-        fprintf(stderr, "Error opening output file for writing.\n");
+        error_msg("cannot open output file for writing");
         return -1;
     }
 
@@ -504,7 +506,7 @@ int bin_open_output(struct binman_struct *BM) {
 
     if (SECOND_OUTPUT_FILE_NAME != NULL) {
         if ((second_out = fopen(SECOND_OUTPUT_FILE_NAME, output_type)) == NULL) {
-            fprintf(stderr, "Error opening output file for writing.\n");
+            error_msg("cannot open second output file for writing.");
             fclose(out);
             return -1;
         }
@@ -526,7 +528,7 @@ int bin_open_input(struct binman_struct *BM) {
 
 
     if (end && start > end) {
-        fprintf(stderr, "Error: Starting byte greater than ending byte\n");
+        error_msg("starting byte greater than ending byte");
         return -1;
     }
 
@@ -543,7 +545,7 @@ int bin_open_input(struct binman_struct *BM) {
 
     // Open first input file
     if ((in = fopen(INPUT_FILE_NAME, "rb")) == NULL) {
-        fprintf(stderr, "Error opening input file: file does not exist.\n");
+        error_msg("input file does not exist");
         return -1;
     }
 
@@ -551,7 +553,7 @@ int bin_open_input(struct binman_struct *BM) {
     fseek(in, start-1, SEEK_SET);
     char *tmp_nam = tmpnam(NULL);
     if ((INPUT_FILE = copy_file(in, tmp_nam, length)) == NULL) {
-        fprintf(stderr, "Error copying input file to structure.\n");
+        error_msg("failed to copy input file to structure");
         fclose(in);
         return -1;
     }
@@ -561,14 +563,14 @@ int bin_open_input(struct binman_struct *BM) {
     // Optional second input file
     if (SECOND_INPUT_FILE_NAME != NULL) {
         if ((second_in = fopen(SECOND_INPUT_FILE_NAME, "rb")) == NULL) {
-            fprintf(stderr, "Error opening input file: file does not exist.\n");
+            error_msg("second input file does not exist");
             return -1;
         }
 
         fseek(second_in, start, SEEK_SET);
         char *tmp_nam_2 = tmpnam(NULL);
         if ((INPUT_FILE2 = copy_file(second_in, tmp_nam_2, length)) == NULL) {
-            fprintf(stderr, "Error copying input file to structure.\n");
+            error_msg("failed to copy second input file to structure");
             fclose(second_in);
             return -1;
         }
@@ -591,7 +593,7 @@ FILE *copy_file(FILE *fp, char *tmp_nam, long n_bytes) {
     long i = 0;
     FILE *tmp;
     if ((tmp = fopen(tmp_nam, "wb+")) == NULL) {
-        fprintf(stderr, "Error opening temporary file\n");
+        error_msg("cannot open temporary file");
         return NULL;
     }
 
