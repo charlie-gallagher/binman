@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "header\\bin_arg_parse.h"
 #include "header\\bin_flow.h"
+#include "header\\bin_error.h"
 
 //#define DEBUG
 
@@ -8,6 +10,10 @@
 
 int main(int argc, char *argv[])
 {
+    /* Print any errors at the end */
+    extern int bin_errno;
+    atexit(print_errors);
+
     #ifdef DEBUG
     printf("\n*************\nDEBUG MODE\n*************\n\n");
     #endif
@@ -28,7 +34,7 @@ int main(int argc, char *argv[])
 
     /* Process arguments */
     if (process_flags_and_params(bm) != 0) {
-        fprintf(stderr, "Error processing flags and parameters.\n");
+        error_msg("main");
         exit(-1);
     }
 

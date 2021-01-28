@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "header\\bin_ops.h"
 #include "header\\bin_print.h"
+#include "header\\bin_error.h"
 
 
 /* Invert all bits
@@ -9,6 +10,7 @@
 */
 int invert_bits(FILE *fp)
 {
+    extern int bin_errno;
     FILE *tmp;
     char *tmp_name;
     char c;
@@ -17,7 +19,8 @@ int invert_bits(FILE *fp)
     // Open temporary file
     tmp_name = tmpnam(NULL);
     if ((tmp = fopen(tmp_name, "wb+")) == NULL) {
-        fprintf(stderr, "Invert bits: Error opening temporary file.\n");
+        error_msg("invert_bits");
+        bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }
 
@@ -87,19 +90,22 @@ void reverse_bytes_in_word(char c[], int word) {
 */
 int flip_bits(FILE *fp, int word)
 {
+    extern int bin_errno;
     unsigned char c[8];
     FILE *tmp;
     char *tmp_name;
 
     if (word <= 0 || word > 8) {
-        fprintf(stderr, "Invert bits: Invalid word size\n");
+        error_msg("flip_bits");
+        bin_errno = INVALID_WORD;
         return -1;
     }
 
     // Open temporary file
     tmp_name = tmpnam(NULL);
     if ((tmp = fopen(tmp_name, "wb+")) == NULL) {
-        fprintf(stderr, "Invert bits: Error opening temporary file.\n");
+        error_msg("flip_bits");
+        bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }
 
@@ -143,6 +149,7 @@ int flip_bits(FILE *fp, int word)
 */
 int flip_bytes(FILE *fp, int word)
 {
+    extern int bin_errno;
     unsigned char c[8];
     FILE *tmp;
     char *tmp_name;
@@ -150,7 +157,8 @@ int flip_bytes(FILE *fp, int word)
     // Open temporary file
     tmp_name = tmpnam(NULL);
     if ((tmp = fopen(tmp_name, "wb+")) == NULL) {
-        fprintf(stderr, "Invert bits: Error opening temporary file.\n");
+        error_msg("flip_bytes");
+        bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }
 

@@ -15,7 +15,7 @@ I'm writing a manual for development. See `doc\man.md`.
 The program was written for Windows, but efforts will soon be aiming at making it compatible with Linux. See "Upcoming Changes." I compile using the Microsoft VS C/C++ Compiler with the following command.
 
 ```raw
-cl src\binman.c src\bin_flow.c src\bin_arg_parse.c src\bin_ops.c src\bin_print.c
+cl src\binman.c src\bin_flow.c src\bin_arg_parse.c src\bin_ops.c src\bin_print.c src\bin_error.c
 ```
 
 
@@ -30,11 +30,10 @@ The following changes are immediately in progress:
 Nothing to note.
 
 ### Recent changes
+- Fixed a bug with de-interleaving, in which two temporary files shared the same name.
 - Added support for all word sizes from 1 to 8 bytes.
 - Added warnings for when file size is not a multiple of word size.
 
-
-Both of these require a function to tell me the size of a file.
 
 &nbsp;
 
@@ -99,7 +98,7 @@ Usage:  binman [/i] [/f] [/F] [/l] [/W] [/d] [/b [offset]] [/e [ending]]
     /O <filename> [<filename2>]    Save result to filename, do not overwrite if
           file exists. Second filename only valid when de-interleaving.
     /w <bytes>    Set number of bytes in a word (from 1 to 8).
-    /W    Interlace (weave) words from file1 and file2
+    /W    Interleave words from file1 and file2; requires two input files.
 
 
 Further Information
@@ -111,7 +110,7 @@ operation.
 
 The final argument is assumed to be a filename unless `/?` or `/h` is given as
 only argument. By default, the output is not sent anywhere unless `/d` (dump)
-is given, in which case the ASII hex values of the file are sent to stdout. If
+is given, in which case the ASCII hex values of the file are sent to stdout. If
 `/d` and an output file are given, the ASCII hex is written to the output as
 text.
 
