@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "header\\bin_arg_parse.h"
 #include "header\\bin_flow.h"
+#include "header\\bin_error.h"
 
 //#define DEBUG
 

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "header\\bin_arg_parse.h"
+#include "header\\bin_error.h"
 
 /* Parse arguments from the command line
 
@@ -525,7 +526,7 @@ int bin_open_input(struct binman_struct *BM) {
 
 
     if (end && start > end) {
-        fprintf(stderr, "Error: Starting byte after ending byte\n");
+        fprintf(stderr, "Error: Starting byte greater than ending byte\n");
         return -1;
     }
 
