@@ -206,7 +206,7 @@ int parse_flags(struct binman_struct *BM, char *flags[]) {
                 break;
             }
             default: {
-                error_msg_arg("unknown flag", f);
+                error_msg_arg("parse_flags", f);
                 bin_errno = INVALID_FLAG;
                 return -1;
             }
@@ -286,7 +286,7 @@ int parse_params(struct binman_struct *BM, char *param[10][3]) {
                 break;
             }
             default: {
-                error_msg_arg("unkown argument", p);
+                error_msg("parse_params");
                 bin_errno = INVALID_PARAM;
                 return -1;
             }
@@ -425,54 +425,54 @@ int is_executable(struct binman_struct *BM) {
     extern int bin_errno;
     // Word size checking
     if (WORD_SIZE <= 0 || WORD_SIZE > 8) {
-        error_msg("invalid word size");
+        error_msg("is_executable");
         bin_errno = INVALID_WORD;
         return -1;
     }
 
     // Conflicts
     if (INTER_FILES == 1 && DEINTER_FILES == 1) {
-        error_msg("cannot interleave and deinterleave in one program call");
+        error_msg("is_executable");
         bin_errno = INTERLEAVE_AND_DEINTERLEAVE;
         return -1;
     }
 
     if (SECOND_INPUT_FILE_NAME != NULL && SECOND_OUTPUT_FILE_NAME != NULL) {
-        error_msg("cannot have two input files and two output files");
+        error_msg("is_executable");
         bin_errno = TWOIN_TWOOUT;
         return -1;
     }
 
     // Requirements for input files
     if (INTER_FILES == 1 && SECOND_INPUT_FILE_NAME == NULL) {
-        error_msg("must have two open files to interleave");
+        error_msg("is_executable");
         bin_errno = TOO_FEW_INPUT;
         return -1;
     }
     if (INTER_FILES == 0 && SECOND_INPUT_FILE_NAME != NULL) {
-        error_msg("two input files specified, but not interleaving");
+        error_msg("is_executable");
         bin_errno = TOO_MANY_INPUT;
         return -1;
     }
     if (INTER_FILES == 1 && SECOND_OUTPUT_FILE_NAME != NULL) {
-        error_msg("interleave specified but two outputs given");
+        error_msg("is_executable");
         bin_errno = TOO_MANY_OUTPUT;
         return -1;
     }
 
     // Requirements for output files
     if (DEINTER_FILES == 1 && SECOND_OUTPUT_FILE_NAME == NULL) {
-        error_msg("must have two output files to de-interleave");
+        error_msg("is_executable");
         bin_errno = TOO_FEW_OUTPUT;
         return -1;
     }
     if (DEINTER_FILES == 0 && SECOND_OUTPUT_FILE_NAME != NULL) {
-        error_msg("two output files specified, but no deinterleave");
+        error_msg("is_executable");
         bin_errno = TOO_MANY_OUTPUT;
         return -1;
     }
     if (DEINTER_FILES == 1 && SECOND_INPUT_FILE_NAME != NULL) {
-        error_msg("de-interleave specified but two inputs given");
+        error_msg("is_executable");
         bin_errno = TOO_MANY_INPUT;
         return -1;
     }
@@ -516,7 +516,7 @@ int bin_open_output(struct binman_struct *BM) {
     }
 
     if ((out = fopen(OUTPUT_FILE_NAME, output_type)) == NULL) {
-        error_msg("cannot open output file for writing");
+        error_msg("bin_open_output");
         bin_errno = CANNOT_OPEN;
         return -1;
     }
@@ -525,7 +525,7 @@ int bin_open_output(struct binman_struct *BM) {
 
     if (SECOND_OUTPUT_FILE_NAME != NULL) {
         if ((second_out = fopen(SECOND_OUTPUT_FILE_NAME, output_type)) == NULL) {
-            error_msg("cannot open second output file for writing.");
+            error_msg("bin_open_output");
             bin_errno = CANNOT_OPEN;
             fclose(out);
             return -1;
@@ -539,6 +539,7 @@ int bin_open_output(struct binman_struct *BM) {
 /* Open files for the binman struct
 */
 int bin_open_input(struct binman_struct *BM) {
+    extern int bin_errno;
     FILE *in, *second_in;
     long start, end, length;
     // Get file location indicators
@@ -548,7 +549,8 @@ int bin_open_input(struct binman_struct *BM) {
 
 
     if (end && start > end) {
-        error_msg("starting byte greater than ending byte");
+        error_msg("bin_open_input");
+        bin_errno = START_BYTE_AFTER_END;
         return -1;
     }
 
@@ -565,7 +567,7 @@ int bin_open_input(struct binman_struct *BM) {
 
     // Open first input file
     if ((in = fopen(INPUT_FILE_NAME, "rb")) == NULL) {
-        error_msg("input file does not exist");
+        error_msg("bin_open_input");
         bin_errno = FILENOTEXIST;
         return -1;
     }
@@ -574,7 +576,7 @@ int bin_open_input(struct binman_struct *BM) {
     fseek(in, start-1, SEEK_SET);
     char *tmp_nam = tmpnam(NULL);
     if ((INPUT_FILE = copy_file(in, tmp_nam, length)) == NULL) {
-        error_msg("failed to copy input file to structure");
+        error_msg("bin_open_input");
         bin_errno = FAILED_TO_COPY;
         fclose(in);
         return -1;
@@ -585,7 +587,7 @@ int bin_open_input(struct binman_struct *BM) {
     // Optional second input file
     if (SECOND_INPUT_FILE_NAME != NULL) {
         if ((second_in = fopen(SECOND_INPUT_FILE_NAME, "rb")) == NULL) {
-            error_msg("second input file does not exist");
+            error_msg("bin_open_input");
             bin_errno = FILENOTEXIST;
             return -1;
         }
@@ -593,7 +595,7 @@ int bin_open_input(struct binman_struct *BM) {
         fseek(second_in, start, SEEK_SET);
         char *tmp_nam_2 = tmpnam(NULL);
         if ((INPUT_FILE2 = copy_file(second_in, tmp_nam_2, length)) == NULL) {
-            error_msg("failed to copy second input file to structure");
+            error_msg("bin_open_input");
             bin_errno = FAILED_TO_COPY;
             fclose(second_in);
             return -1;
@@ -617,7 +619,7 @@ FILE *copy_file(FILE *fp, char *tmp_nam, long n_bytes) {
     long i = 0;
     FILE *tmp;
     if ((tmp = fopen(tmp_nam, "wb+")) == NULL) {
-        error_msg("cannot open temporary file");
+        error_msg("copy_file");
         bin_errno = CANNOT_OPEN_TMP;
         return NULL;
     }

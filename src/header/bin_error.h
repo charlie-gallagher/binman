@@ -11,6 +11,7 @@
 
 
 int bin_errno;
+void print_errors(void);
 
 /* Error codes */
 // files
