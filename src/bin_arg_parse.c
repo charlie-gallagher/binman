@@ -66,7 +66,7 @@ struct binman_struct *bin_arg_parse(int argc, char *argv[])
             second_input_file_name = argv[argc-1];
         }
         else {
-            error_msg("Illegal argument");
+            error_msg("bin_arg_parse");
             return NULL;
         }
     }
@@ -80,12 +80,12 @@ struct binman_struct *bin_arg_parse(int argc, char *argv[])
 
     /* Parse flags and parameters, checking for errors */
     if (parse_flags(&BM, flags) != 0) {
-        error_msg("Invalid flag");
+        error_msg("bin_arg_parse");
         return NULL;
     }
 
     if (parse_params(&BM, params) != 0) {
-        error_msg("Invalid flag");
+        error_msg("bin_arg_parse");
         return NULL;
     }
 
@@ -151,6 +151,7 @@ int process_flags_and_params(struct binman_struct *BM) {
         Returns 0 (success) or -1 (failure)
 */
 int parse_flags(struct binman_struct *BM, char *flags[]) {
+    extern int bin_errno;
     int i, oflag = 0;
     char f;
     char have_appeared[10];
@@ -205,7 +206,8 @@ int parse_flags(struct binman_struct *BM, char *flags[]) {
                 break;
             }
             default: {
-                error_msg_arg("Unknown flag", f);
+                error_msg_arg("unknown flag", f);
+                bin_errno = INVALID_FLAG;
                 return -1;
             }
         }
@@ -231,6 +233,7 @@ int parse_flags(struct binman_struct *BM, char *flags[]) {
         Returns 0 if successful, else error occurred
 */
 int parse_params(struct binman_struct *BM, char *param[10][3]) {
+    extern int bin_errno;
     int i;
     char p, *p_value;
     char have_appeared[10];
@@ -283,7 +286,8 @@ int parse_params(struct binman_struct *BM, char *param[10][3]) {
                 break;
             }
             default: {
-                error_msg_arg("Unkown argument", p);
+                error_msg_arg("unkown argument", p);
+                bin_errno = INVALID_PARAM;
                 return -1;
             }
         }
@@ -418,48 +422,58 @@ int is_duplicate_flag(char *already_appeared, char c, char index) {
     number of files is given.
 */
 int is_executable(struct binman_struct *BM) {
+    extern int bin_errno;
     // Word size checking
     if (WORD_SIZE <= 0 || WORD_SIZE > 8) {
         error_msg("invalid word size");
+        bin_errno = INVALID_WORD;
         return -1;
     }
 
     // Conflicts
     if (INTER_FILES == 1 && DEINTER_FILES == 1) {
         error_msg("cannot interleave and deinterleave in one program call");
+        bin_errno = INTERLEAVE_AND_DEINTERLEAVE;
         return -1;
     }
 
     if (SECOND_INPUT_FILE_NAME != NULL && SECOND_OUTPUT_FILE_NAME != NULL) {
         error_msg("cannot have two input files and two output files");
+        bin_errno = TWOIN_TWOOUT;
         return -1;
     }
 
     // Requirements for input files
     if (INTER_FILES == 1 && SECOND_INPUT_FILE_NAME == NULL) {
         error_msg("must have two open files to interleave");
+        bin_errno = TOO_FEW_INPUT;
         return -1;
     }
     if (INTER_FILES == 0 && SECOND_INPUT_FILE_NAME != NULL) {
         error_msg("two input files specified, but not interleaving");
+        bin_errno = TOO_MANY_INPUT;
         return -1;
     }
     if (INTER_FILES == 1 && SECOND_OUTPUT_FILE_NAME != NULL) {
         error_msg("interleave specified but two outputs given");
+        bin_errno = TOO_MANY_OUTPUT;
         return -1;
     }
 
     // Requirements for output files
     if (DEINTER_FILES == 1 && SECOND_OUTPUT_FILE_NAME == NULL) {
         error_msg("must have two output files to de-interleave");
+        bin_errno = TOO_FEW_OUTPUT;
         return -1;
     }
     if (DEINTER_FILES == 0 && SECOND_OUTPUT_FILE_NAME != NULL) {
         error_msg("two output files specified, but no deinterleave");
+        bin_errno = TOO_MANY_OUTPUT;
         return -1;
     }
     if (DEINTER_FILES == 1 && SECOND_INPUT_FILE_NAME != NULL) {
         error_msg("de-interleave specified but two inputs given");
+        bin_errno = TOO_MANY_INPUT;
         return -1;
     }
 
@@ -471,6 +485,7 @@ int is_executable(struct binman_struct *BM) {
     Opens output file(s) for writing
 */
 int bin_open_output(struct binman_struct *BM) {
+    extern int bin_errno;
     // Check early for absence of output file
     if (OUTPUT_FILE_NAME == NULL) {
         OUTPUT_FILE = stdout;
@@ -485,6 +500,8 @@ int bin_open_output(struct binman_struct *BM) {
         if (file_exists(OUTPUT_FILE_NAME) == 1) {
             error_msg("bin_open_output");
             fprintf(stderr, "Cannot overwrite %s\n", OUTPUT_FILE_NAME);
+            bin_errno = CANNOT_OVERWRITE;
+
             return -1;
         }
         // Check second file (if exists)
@@ -492,6 +509,7 @@ int bin_open_output(struct binman_struct *BM) {
             if (file_exists(SECOND_OUTPUT_FILE_NAME) == 1) {
                 error_msg("bin_open_output");
                 fprintf(stderr, "Cannot overwrite %s\n", SECOND_OUTPUT_FILE_NAME);
+                bin_errno = CANNOT_OVERWRITE;
                 return -1;
             }
         }
@@ -499,6 +517,7 @@ int bin_open_output(struct binman_struct *BM) {
 
     if ((out = fopen(OUTPUT_FILE_NAME, output_type)) == NULL) {
         error_msg("cannot open output file for writing");
+        bin_errno = CANNOT_OPEN;
         return -1;
     }
 
@@ -507,6 +526,7 @@ int bin_open_output(struct binman_struct *BM) {
     if (SECOND_OUTPUT_FILE_NAME != NULL) {
         if ((second_out = fopen(SECOND_OUTPUT_FILE_NAME, output_type)) == NULL) {
             error_msg("cannot open second output file for writing.");
+            bin_errno = CANNOT_OPEN;
             fclose(out);
             return -1;
         }
@@ -546,6 +566,7 @@ int bin_open_input(struct binman_struct *BM) {
     // Open first input file
     if ((in = fopen(INPUT_FILE_NAME, "rb")) == NULL) {
         error_msg("input file does not exist");
+        bin_errno = FILENOTEXIST;
         return -1;
     }
 
@@ -554,6 +575,7 @@ int bin_open_input(struct binman_struct *BM) {
     char *tmp_nam = tmpnam(NULL);
     if ((INPUT_FILE = copy_file(in, tmp_nam, length)) == NULL) {
         error_msg("failed to copy input file to structure");
+        bin_errno = FAILED_TO_COPY;
         fclose(in);
         return -1;
     }
@@ -564,6 +586,7 @@ int bin_open_input(struct binman_struct *BM) {
     if (SECOND_INPUT_FILE_NAME != NULL) {
         if ((second_in = fopen(SECOND_INPUT_FILE_NAME, "rb")) == NULL) {
             error_msg("second input file does not exist");
+            bin_errno = FILENOTEXIST;
             return -1;
         }
 
@@ -571,6 +594,7 @@ int bin_open_input(struct binman_struct *BM) {
         char *tmp_nam_2 = tmpnam(NULL);
         if ((INPUT_FILE2 = copy_file(second_in, tmp_nam_2, length)) == NULL) {
             error_msg("failed to copy second input file to structure");
+            bin_errno = FAILED_TO_COPY;
             fclose(second_in);
             return -1;
         }
@@ -594,6 +618,7 @@ FILE *copy_file(FILE *fp, char *tmp_nam, long n_bytes) {
     FILE *tmp;
     if ((tmp = fopen(tmp_nam, "wb+")) == NULL) {
         error_msg("cannot open temporary file");
+        bin_errno = CANNOT_OPEN_TMP;
         return NULL;
     }
 
