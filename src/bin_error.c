@@ -69,6 +69,30 @@ void print_errors(void) {
             fprintf(stderr, "\nStart byte after end byte.\n");
             break;
         }
+        case INVALID_OUT_TYPE: {
+            fprintf(stderr, "\nInvalid output type.\n");
+            break;
+        }
+        case WRITE_ERROR: {
+            fprintf(stderr, "\nFailed to write to file.\n");
+            break;
+        }
+        case HELP_FILE_ERROR: {
+            fprintf(stderr, "\nError opening help file.\n");
+            break;
+        }
+        case : {
+            fprintf(stderr, "\n\n");
+            break;
+        }
+        case : {
+            fprintf(stderr, "\n\n");
+            break;
+        }
+        case : {
+            fprintf(stderr, "\n\n");
+            break;
+        }
         case 0: {
             fprintf(stderr, "No errors.\n");
             break;

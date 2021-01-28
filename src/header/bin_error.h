@@ -38,6 +38,11 @@ void print_errors(void);
 #define START_BYTE_AFTER_END 1017
 
 
+// printing
+#define INVALID_OUT_TYPE 1020
+#define WRITE_ERROR 1021
+#define HELP_FILE_ERROR 1022
+
 // operations
 
 #endif
