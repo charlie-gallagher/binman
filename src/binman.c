@@ -11,6 +11,7 @@
 int main(int argc, char *argv[])
 {
     /* Print any errors at the end */
+    extern int bin_errno;
     atexit(print_errors);
 
     #ifdef DEBUG
@@ -33,7 +34,7 @@ int main(int argc, char *argv[])
 
     /* Process arguments */
     if (process_flags_and_params(bm) != 0) {
-        fprintf(stderr, "Error processing flags and parameters.\n");
+        error_msg("main");
         exit(-1);
     }
 

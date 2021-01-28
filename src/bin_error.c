@@ -81,18 +81,6 @@ void print_errors(void) {
             fprintf(stderr, "\nError opening help file.\n");
             break;
         }
-        case : {
-            fprintf(stderr, "\n\n");
-            break;
-        }
-        case : {
-            fprintf(stderr, "\n\n");
-            break;
-        }
-        case : {
-            fprintf(stderr, "\n\n");
-            break;
-        }
         case 0: {
             fprintf(stderr, "No errors.\n");
             break;
