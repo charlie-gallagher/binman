@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "header\\bin_arg_parse.h"
 #include "header\\bin_flow.h"
 #include "header\\bin_error.h"
@@ -9,6 +10,9 @@
 
 int main(int argc, char *argv[])
 {
+    /* Print any errors at the end */
+    atexit(print_errors);
+
     #ifdef DEBUG
     printf("\n*************\nDEBUG MODE\n*************\n\n");
     #endif
