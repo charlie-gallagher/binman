@@ -4,6 +4,7 @@
 
 &nbsp;
 
+This is a fork of @charlie-gallagher's binman program.
 
 ## Overview
 The `binman` program inputs a file and performs various manipulations at the byte and word level. Word sizes may range from 8 to 64 bits. In addition to single-file operations, multi-file interleave and de-interleave operations are also supported. These allow one to input two files and combine them, turning one file into the odd words and the other into the even words of the final file.
