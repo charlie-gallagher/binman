@@ -14,7 +14,7 @@ I'm writing a manual for development. See `doc\man.md`.
 The program was written for Windows, but efforts will soon be aiming at making it compatible with Linux. See "Upcoming Changes." I compile using the Microsoft VS C/C++ Compiler with the following command.
 
 ```raw
-cl src\binman.c src\bin_flow.c src\bin_arg_parse.c src\bin_ops.c src\bin_print.c
+cl src\binman.c src\bin_flow.c src\bin_arg_parse.c src\bin_ops.c src\bin_print.c src\bin_error.c
 ```
 
 
