@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "header\\bin_print.h"
-#include "header\\bin_ops.h"
-#include "header\\bin_arg_parse.h"
-#include "header\\bin_flow.h"
+#include <bin_print.h>
+#include <bin_ops.h>
+#include <bin_arg_parse.h>
+#include <bin_flow.h>
 
 
 int run_binman(struct binman_struct *BM) {

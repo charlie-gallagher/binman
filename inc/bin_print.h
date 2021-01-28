@@ -12,7 +12,11 @@
 #define DUMP 0
 #define WRITE 1
 
-#define HELP_FILENAME "doc\\windows_help.txt"
+#ifdef _MSC_VER
+	#define HELP_FILENAME "doc\\windows_help.txt"
+#else
+	#define HELP_FILENAME "doc/windows_help.txt"
+#endif
 
 /* Print functions */
 int bin_out(FILE *input, FILE *output, char type); // Chooses program flow

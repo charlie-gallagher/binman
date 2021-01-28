@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "header\\bin_arg_parse.h"
-#include "header\\bin_error.h"
+#include <bin_arg_parse.h>
+#include <bin_error.h>
+
+//#ifdef _MSC_VER
 
 /* Parse arguments from the command line
 
@@ -657,3 +659,5 @@ int file_exists(char *filename) {
     }
     return 1;
 }
+//#endif /* WINDOWS ONLY */
+
