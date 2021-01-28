@@ -4,7 +4,6 @@
 
 &nbsp;
 
-This is a fork of @charlie-gallagher's binman program.
 
 ## Overview
 The `binman` program inputs a file and performs various manipulations at the byte and word level. Word sizes may range from 8 to 64 bits. In addition to single-file operations, multi-file interleave and de-interleave operations are also supported. These allow one to input two files and combine them, turning one file into the odd words and the other into the even words of the final file.
@@ -23,8 +22,7 @@ cl src\binman.c src\bin_flow.c src\bin_arg_parse.c src\bin_ops.c src\bin_print.c
 The following changes are immediately in progress:
 
 - Expand "Debug Mode" using conditional preprocessor directives.
-- Improve error and warning system.
-- Port to Linux. This will involve only a little work on the program proper, but a lot of work on the command-line argument parser.
+- Port to Linux. This will involve only a little work on the program proper, but a lot of work on the command-line argument parser to make it compatible with the standard Unix-style command line arguments. 
 
 ### Bug and hotfix notes
 Nothing to note.
@@ -33,6 +31,8 @@ Nothing to note.
 - Fixed a bug with de-interleaving, in which two temporary files shared the same name.
 - Added support for all word sizes from 1 to 8 bytes.
 - Added warnings for when file size is not a multiple of word size.
+- Remade the error system to give descriptive, clean errors. 
+- Added makefile and made Linux-safe (sjgallagher2)
 
 
 &nbsp;
@@ -126,8 +126,6 @@ Report any bugs to charlesjgallagher15@gmail.com or submit as an issue on
 GitHub. Contributions welcome.
 ```
 
-
-This is a sort of capstone project for me finishing a book on programming in C. I am not a computer scientist; my background is in economics and statistical computing. `binman` should not be considered a model of (or held to the standards of) good programming.
 
 ---
 Charlie Gallagher, 2021
