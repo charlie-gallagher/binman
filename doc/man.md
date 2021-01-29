@@ -44,3 +44,4 @@ There are no warning codes.
 And while I'm on the subject of warnings, there is no warning system. Warnings
 are thrown at the moment they are needed. Reflecting on this, I should definitely
 include warning messages in the error codes. Will implement that today. 
+
