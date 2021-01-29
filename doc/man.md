@@ -42,6 +42,8 @@ are error codes corresponding to the various error messages needed right now.
 There are no warning codes. 
 
 And while I'm on the subject of warnings, there is no warning system. Warnings
-are thrown at the moment they are needed. Reflecting on this, I should definitely
-include warning messages in the error codes. Will implement that today. 
-
+are thrown at the moment they are needed. Reflecting on this, I should consider
+adding warnings to the final message list. This is tough because I like desc-
+riptive warnings like "Final [2] bytes dropped." I would need a different macro
+for each possible case, and that's not convenient. Maybe better for now to do 
+nothing. 

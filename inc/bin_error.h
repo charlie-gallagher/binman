@@ -43,6 +43,5 @@ void print_errors(void);
 #define WRITE_ERROR 1021
 #define HELP_FILE_ERROR 1022
 
-// operations -- no new types of errors
 
 #endif
