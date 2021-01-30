@@ -6,8 +6,8 @@
 #define PRINT_ERRORS
 
 /* Error macros */
-#define error_msg(msg) fprintf(stderr, "%s (%d): %s\n", __FILE__, __LINE__, (msg))
-#define error_msg_arg(msg, p) fprintf(stderr, "%s (%d): %s [%c]\n", __FILE__, __LINE__, (msg), (p))
+#define error_msg fprintf(stderr, "%s (%d): %s\n", __FILE__, __LINE__, __func__)
+#define error_msg_arg(p) fprintf(stderr, "%s (%d): %s [%c]\n", __FILE__, __LINE__, __func__, (p))
 
 
 int bin_errno;

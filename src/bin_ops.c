@@ -19,7 +19,7 @@ int invert_bits(FILE *fp)
     // Open temporary file
     tmp_name = tmpnam(NULL);
     if ((tmp = fopen(tmp_name, "wb+")) == NULL) {
-        error_msg("invert_bits");
+        error_msg;
         bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }
@@ -96,7 +96,7 @@ int flip_bits(FILE *fp, int word)
     char *tmp_name;
 
     if (word <= 0 || word > 8) {
-        error_msg("flip_bits");
+        error_msg;
         bin_errno = INVALID_WORD;
         return -1;
     }
@@ -104,7 +104,7 @@ int flip_bits(FILE *fp, int word)
     // Open temporary file
     tmp_name = tmpnam(NULL);
     if ((tmp = fopen(tmp_name, "wb+")) == NULL) {
-        error_msg("flip_bits");
+        error_msg;
         bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }
@@ -157,7 +157,7 @@ int flip_bytes(FILE *fp, int word)
     // Open temporary file
     tmp_name = tmpnam(NULL);
     if ((tmp = fopen(tmp_name, "wb+")) == NULL) {
-        error_msg("flip_bytes");
+        error_msg;
         bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }
