@@ -11,28 +11,30 @@ The `binman` program inputs a file and performs various manipulations at the byt
 I'm writing a manual for development. See `doc\man.md`.
 
 ### Compilation
-The program was written for Windows, but efforts will soon be aiming at making it compatible with Linux. See "Upcoming Changes." I compile using the Microsoft VS C/C++ Compiler with the following command.
+The program was written for Windows, but efforts will soon be aiming at making it compatible with Linux. See "Upcoming Changes." I compile using the Microsoft VS C/C++ Compiler (`cl.exe`) with the following command.
 
 ```raw
-cl src\binman.c src\bin_flow.c src\bin_arg_parse.c src\bin_ops.c src\bin_print.c src\bin_error.c
+cl @win_make.txt
 ```
 
+On Linux, `binman` can now be compiled with the `Makefile` included in the base directory. To do this, run `make` in the project directory.
 
 ## Upcoming Changes
 The following changes are immediately in progress:
 
 - Expand "Debug Mode" using conditional preprocessor directives.
-- Port to Linux. This will involve only a little work on the program proper, but a lot of work on the command-line argument parser to make it compatible with the standard Unix-style command line arguments. 
+- Add a POSIX-style command-line interface
 
 ### Bug and hotfix notes
 Nothing to note.
 
 ### Recent changes
+- Added project file for `cl.exe`
+- Reogranized includes, added makefile, and made Linux-safe (sjgallagher2)
+- Remade the error system to give descriptive, clean errors.
 - Fixed a bug with de-interleaving, in which two temporary files shared the same name.
 - Added support for all word sizes from 1 to 8 bytes.
 - Added warnings for when file size is not a multiple of word size.
-- Remade the error system to give descriptive, clean errors. 
-- Added makefile and made Linux-safe (sjgallagher2)
 
 
 &nbsp;
