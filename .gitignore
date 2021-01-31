@@ -5,3 +5,4 @@ command_line/**
 *.swp
 obj/
 obj/*
+binman

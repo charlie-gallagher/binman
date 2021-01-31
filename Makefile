@@ -2,7 +2,7 @@
 # Note: tabs not spaces. E.g. if in vim, check your tab expand:
 # 	:set expandtab?		=> noexpandtab
 
-TARGET  := binman # Final target name
+TARGET  := binman  # Final target name
 
 INCDIR 	:= inc
 SRCDIR	:= src
@@ -11,8 +11,11 @@ CC 		:= gcc -c
 LD		:= gcc -o
 CFLAGS	:= -I$(INCDIR) -Wall -g3 # Use incdir, all warnings, add debug info
 LDFLAGS	:= -g3
-SRCS	:= $(wildcard src/*.c)
+SRCS	:= $(wildcard $(SRCDIR)/*.c)
 OBJS	:= $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
+
+# Header dependencies
+DEPS	:= $(wildcard $(INCDIR)/*.h)
 
 # Quickref
 # $^	prereq list
@@ -27,8 +30,7 @@ all: $(TARGET) # Default rule runs when TARGET is out of date
 $(TARGET) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $(TARGET) $^
 
-$(OBJDIR)/$(SRCDIR)/%.o : $(SRCDIR)/%.c $(INCDIR)/%.h
-	echo $@
+$(OBJDIR)/$(SRCDIR)/%.o : $(SRCDIR)/%.c $(DEPS)
 	$(CC) $(CFLAGS) -o $@ $<
 
 $(OBJS): | $(OBJDIR)/$(SRCDIR) # Make objdir first, no out-of-date check
@@ -43,5 +45,6 @@ $(OBJDIR):
 # remove object files, keep going if error
 clean:
 	-rm -f $(OBJDIR)/$(SRCDIR)/*.o 
+	-rm -f binman
 
 
