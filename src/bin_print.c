@@ -25,7 +25,7 @@ int bin_out(FILE *input, FILE *output, char type)
         }
         case WRITE: break;
         default: {
-            error_msg("bin_out");
+            error_msg;
             bin_errno = INVALID_OUT_TYPE;
             return -1;
         }
@@ -33,7 +33,7 @@ int bin_out(FILE *input, FILE *output, char type)
 
     // Write to output (either file or stdout)
     if (bin_write(input, output) != 0) {
-        error_msg("bin_out");
+        error_msg;
         return -1;
     }
     rewind(input);
@@ -80,7 +80,7 @@ int byte_to_hex(FILE *fp)
     tmpnam(hex_tmp_name);
 
     if ((hex_tmp = fopen(hex_tmp_name, "wb+")) == NULL) {
-        error_msg("byte_to_hex");
+        error_msg;
         bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }
@@ -178,7 +178,7 @@ int print_help(void)
     // Help file location defined in bin_print.h
     if ((help = fopen(HELP_FILENAME, "r")) == NULL)
     {
-        error_msg("print_help");
+        error_msg;
         bin_errno = HELP_FILE_ERROR;
         return -1;
     }
@@ -206,7 +206,7 @@ int interleave_out(FILE *fp_odd, FILE *fp_even, FILE *fp_out, int word, char typ
     tmpnam(tmp_name);
 
     if ((tmp_out = fopen(tmp_name, "wb+")) == NULL) {
-        error_msg("interleave_out");
+        error_msg;
         bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }
@@ -237,14 +237,14 @@ int deinterleave_out(FILE *fp_in, FILE *fp_odd, FILE *fp_even, int word, char ty
 
     tmpnam(tmp_name_a);
     if ((tmp_out_a = fopen(tmp_name_a, "wb+")) == NULL) {
-        error_msg("deinterleave_out");
+        error_msg;
         bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }
 
     tmpnam(tmp_name_b);
     if ((tmp_out_b = fopen(tmp_name_b, "wb+")) == NULL) {
-        error_msg("deinterleave_out");
+        error_msg;
         bin_errno = CANNOT_OPEN_TMP;
         return -1;
     }

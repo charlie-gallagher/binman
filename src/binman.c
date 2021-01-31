@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
     /* Process arguments */
     if (process_flags_and_params(bm) != 0) {
-        error_msg("main");
+        error_msg;
         exit(-1);
     }
 
