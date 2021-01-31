@@ -106,12 +106,6 @@ struct binman_struct *bin_arg_parse(int argc, char *argv[])
     Returns 1 for success, 0 for failure
 */
 int process_flags_and_params(struct binman_struct *BM) {
-    FILE *in;
-    FILE *second_in;
-    FILE *out;
-    FILE *second_out;
-    char output_type[2];
-
     // Check executability of struct
     if (is_executable(BM) != 0) {
         error_msg;

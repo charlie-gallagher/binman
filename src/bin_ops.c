@@ -57,7 +57,7 @@ int invert_bits(FILE *fp)
     Uses BitReverseTable256[] from bin_ops.h
 */
 
-void reverse_bits_in_word(char c[], int word) {
+void reverse_bits_in_word(unsigned char c[], int word) {
     int i;
 
     for (i = 0; i < word; i++) {
@@ -70,7 +70,7 @@ void reverse_bits_in_word(char c[], int word) {
 /* Reverse bytes
     Flips bytes in a word left to right
 */
-void reverse_bytes_in_word(char c[], int word) {
+void reverse_bytes_in_word(unsigned char c[], int word) {
     static char out[8];
     int i, j;
 

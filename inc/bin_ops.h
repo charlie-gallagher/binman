@@ -15,8 +15,8 @@ int flip_bits(FILE *fp, int word);
 int flip_bytes(FILE *fp, int word);
 
 // Utility functions
-void reverse_bytes_in_word(char c[], int word);
-void reverse_bits_in_word(char c[], int word);
+void reverse_bytes_in_word(unsigned char c[], int word);
+void reverse_bits_in_word(unsigned char c[], int word);
 
 /* Functions that work on two files */
 int interleave_words(FILE *fp1, FILE *fp2, FILE *fp3, int word);
