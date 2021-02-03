@@ -11,25 +11,38 @@ The `binman` program inputs a file and performs various manipulations at the byt
 I'm writing a manual for development. See `doc\man.md`.
 
 ### Compilation
-The program was written for Windows, but efforts will soon be aiming at making it compatible with Linux. See "Upcoming Changes." I compile using the Microsoft VS C/C++ Compiler (`cl.exe`) with the following command.
+The program was written for Windows, but efforts will soon be aiming at making it compatible with Linux. See "Upcoming Changes."
 
-```raw
-cl @win_make.txt
+There are two makefiles, `win_makefile` and `unix_makefile`. The Windows makefile uses `NMAKE` and `CL` from the VS C/C++ build tools.
+
+```
+nmake /f win_makefile
 ```
 
-On Linux, `binman` can now be compiled with the `Makefile` included in the base directory. To do this, run `make` in the project directory.
+For the `gcc` compiler, use `make` and the Unix makefile:
+
+```
+make -f unix_makefile
+```
 
 ## Upcoming Changes
 The following changes are immediately in progress:
 
 - Expand "Debug Mode" using conditional preprocessor directives.
-- Add a POSIX-style command-line interface
+- Improve build tools
+
+
+### To-do
+These changes are planned, but not started.
+
+- Add POSIX-style command-line interface
 
 ### Bug and hotfix notes
 Nothing to note.
 
 ### Recent changes
-- Added project file for `cl.exe`
+- Replaced command file with makefile for `NMAKE`
+- Added command file for `cl.exe`
 - Reogranized includes, added makefile, and made Linux-safe (sjgallagher2)
 - Remade the error system to give descriptive, clean errors.
 - Fixed a bug with de-interleaving, in which two temporary files shared the same name.

@@ -1,0 +1,14 @@
+# *******************************
+# Binman makefile
+# Charlie Gallagher, Feb 2021
+# *******************************
+CFLAGS=/c /Iinc
+
+{src\}.c.obj::
+    $(CC) $(CFLAGS) $<
+
+binman.exe: binman.obj bin_arg_parse.obj bin_error.obj bin_flow.obj bin_ops.obj bin_print.obj
+	$(CC) binman.obj bin_arg_parse.obj bin_error.obj bin_flow.obj bin_ops.obj bin_print.obj
+
+clean:
+	rm *.obj binman.exe
