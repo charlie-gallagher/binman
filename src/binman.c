@@ -11,7 +11,6 @@
 int main(int argc, char *argv[])
 {
     /* Print any errors at the end */
-    extern int bin_errno;
     atexit(print_errors);
 
     #ifdef DEBUG
