@@ -15,7 +15,7 @@
 #ifdef _MSC_VER
 	#define HELP_FILENAME "doc\\windows_help.txt"
 #else
-	#define HELP_FILENAME "doc/windows_help.txt"
+	#define HELP_FILENAME "doc/unix_help.txt"
 #endif
 
 /* Print functions */

@@ -300,6 +300,7 @@ int parse_params(struct binman_struct *BM, char *param[10][3]) {
     Must be of the form "/[A-Za-z?]"
 */
 int is_bin_flagform(char *item) {
+#ifdef _MSC_VER
     char has_slash, is_character, len_valid;
 
     len_valid = strlen(item) == 2;
@@ -310,6 +311,18 @@ int is_bin_flagform(char *item) {
 
     if (len_valid && has_slash && is_character)
         return 1;
+#else
+    char has_dash, is_character, len_valid;
+
+    len_valid = strlen(item) == 2;
+    has_dash = item[0] == '-';
+    is_character = (item[1] >= 65 && item[1] <=90) ||
+                    (item[1] >= 97 && item[1] <= 122) ||
+                    (item[1] == '?');
+
+    if (len_valid && has_dash && is_character)
+        return 1;
+#endif
 
     return 0;
 }
