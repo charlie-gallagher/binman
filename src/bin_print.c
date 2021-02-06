@@ -149,7 +149,7 @@ int bin_list(FILE *fp)
     // Ensure whole file is read
     rewind(fp);
 
-    // Print 16 (or fewer) bytes until end of file has been read
+    // Print 16 (or fewer) bytes until at most 20 lines have been read
     j = 1;
     while (j <= 20) {
         len = fread(c, 1, 16, fp);

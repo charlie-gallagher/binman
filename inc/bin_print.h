@@ -12,6 +12,7 @@
 #define DUMP 0
 #define WRITE 1
 
+// TODO: Improve ability to find help file, esp. when PATH is set
 #ifdef _MSC_VER
 	#define HELP_FILENAME "doc\\windows_help.txt"
 #else
