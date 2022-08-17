@@ -12,7 +12,8 @@ LD		:= gcc -o
 CFLAGS	:= -I$(INCDIR) -Wall -g3 # Use incdir, all warnings, add debug info
 LDFLAGS	:= -g3
 SRCS	:= $(wildcard $(SRCDIR)/*.c)
-OBJS	:= $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
+# OBJS	:= $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
+OBJS	:= $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 # Header dependencies
 DEPS	:= $(wildcard $(INCDIR)/*.h)
@@ -30,12 +31,12 @@ all: $(TARGET) # Default rule runs when TARGET is out of date
 $(TARGET) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $(TARGET) $^
 
-$(OBJDIR)/$(SRCDIR)/%.o : $(SRCDIR)/%.c $(DEPS)
+$(OBJDIR)/%.o : $(SRCDIR)/%.c $(DEPS)
 	$(CC) $(CFLAGS) -o $@ $<
 
-$(OBJS): | $(OBJDIR)/$(SRCDIR) # Make objdir first, no out-of-date check
+$(OBJS): | $(OBJDIR) # Make objdir first, no out-of-date check
 
-$(OBJDIR)/$(SRCDIR): | $(OBJDIR)
+$(OBJDIR): | $(OBJDIR)
 	mkdir $@
 
 $(OBJDIR):
@@ -44,7 +45,7 @@ $(OBJDIR):
 .PHONY : clean # in case there is ever a file called 'clean'
 # remove object files, keep going if error
 clean:
-	-rm -f $(OBJDIR)/$(SRCDIR)/*.o 
+	-rm -f $(OBJDIR)/*.o
 	-rm -f binman
 
 
