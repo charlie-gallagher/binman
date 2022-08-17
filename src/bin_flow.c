@@ -88,7 +88,11 @@ int run_binman(struct binman_struct *BM) {
 
 
     // Cleaning up
-    fcloseall();
+    // It turns out `fcloseall()` is a GNU extension, so I have to find
+    // a better way to clean up these files
+    // Actually, there's no man-page entry but `fcloseall` is documented
+    // in `fclose()`. So I'm not sure what's going on there.
+    fclose(INPUT_FILE);
     #ifdef DEBUG
     printf("Removing %s\n", INPUT_FILE_TMP_NAME);
     #endif
@@ -99,6 +103,7 @@ int run_binman(struct binman_struct *BM) {
         #ifdef DEBUG
         printf("Removing %s\n", INPUT_FILE2_TMP_NAME);
         #endif
+	fclose(INPUT_FILE);
         remove(INPUT_FILE2_TMP_NAME);
     }
     return 0;

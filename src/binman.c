@@ -3,6 +3,7 @@
 #include <bin_arg_parse.h>
 #include <bin_flow.h>
 #include <bin_error.h>
+#include <bin_print.h>
  
 //#define DEBUG
 
