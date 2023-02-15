@@ -10,7 +10,7 @@
 #define error_msg_arg(p) fprintf(stderr, "%s (%d): %s [%c]\n", __FILE__, __LINE__, __func__, (p))
 
 
-int bin_errno;
+extern int bin_errno;
 void print_errors(void);
 
 /* Error codes */
