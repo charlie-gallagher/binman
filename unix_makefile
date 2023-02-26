@@ -16,36 +16,37 @@ CC 		:= gcc -c
 LD		:= gcc -o
 CFLAGS	:= -I$(INCDIR) -Wall -g3 # Use incdir, all warnings, add debug info
 LDFLAGS	:= -g3
-SRCS	:= $(wildcard $(SRCDIR)/*.c)
-# OBJS	:= $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
-OBJS	:= $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
-
-# Header dependencies
-DEPS	:= $(wildcard $(INCDIR)/*.h)
 
 # Quickref
 # $^	prereq list
-# S@	target
-# S<	first prereq
-# S?	out of date dependencies
-# S+	all dependencies
+# $@	target
+# $<	first prereq
+# $?	out of date dependencies
+# $+	all dependencies
 # $|	'order only' prereqs
 
 all: $(TARGET) # Default rule runs when TARGET is out of date
 
-$(TARGET) : $(OBJS)
+$(TARGET) : $(OBJDIR)/bin_arg_parse.o $(OBJDIR)/bin_error.o $(OBJDIR)/bin_flow.o $(OBJDIR)/binman.o $(OBJDIR)/bin_ops.o $(OBJDIR)/bin_print.o
 	$(LD) $(LDFLAGS) -o $(TARGET) $^
 
-$(OBJDIR)/%.o : $(SRCDIR)/%.c $(DEPS)
-	$(CC) $(CFLAGS) -o $@ $<
+$(OBJDIR)/bin_arg_parse.o: $(SRCDIR)/bin_arg_parse.c $(INCDIR)/bin_arg_parse.h $(INCDIR)/bin_error.h
+	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_arg_parse.c
 
-$(OBJS): | $(OBJDIR) # Make objdir first, no out-of-date check
+$(OBJDIR)/bin_error.o: $(SRCDIR)/bin_error.c $(INCDIR)/bin_error.h
+	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_error.c
 
-$(OBJDIR): | $(OBJDIR)
-	mkdir $@
+$(OBJDIR)/bin_flow.o: $(SRCDIR)/bin_flow.c $(INCDIR)/bin_print.h $(INCDIR)/bin_ops.h $(INCDIR)/bin_arg_parse.h $(INCDIR)/bin_flow.h
+	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_flow.c
 
-$(OBJDIR):
-	mkdir $@
+$(OBJDIR)/binman.o: $(SRCDIR)/binman.c $(INCDIR)/bin_arg_parse.h $(INCDIR)/bin_flow.h $(INCDIR)/bin_error.h $(INCDIR)/bin_print.h
+	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/binman.c
+
+$(OBJDIR)/bin_ops.o: $(SRCDIR)/bin_ops.c $(INCDIR)/bin_ops.h $(INCDIR)/bin_print.h $(INCDIR)/bin_error.h
+	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_ops.c
+
+$(OBJDIR)/bin_print.o: $(SRCDIR)/bin_print.c $(INCDIR)/bin_ops.h $(INCDIR)/bin_print.h $(INCDIR)/bin_error.h
+	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_print.c
 
 .PHONY : clean # in case there is ever a file called 'clean'
 # remove object files, keep going if error
@@ -56,7 +57,19 @@ clean:
 .PHONY : install
 install:
 	echo "Installing into $(INSTALL_ROOT)..."
-	mkdir -p $(INSTALL_ROOT)/{bin,share/binman}
-	cp binman $(INSTALL_ROOT)/bin
-	cp doc/help.txt $(INSTALL_ROOT)/share
+	mkdir -p $(INSTALL_ROOT)/bin
+	mkdir -p $(INSTALL_ROOT)/share/binman
+	cp binman $(INSTALL_ROOT)/bin/binman
+	cp doc/help.txt $(INSTALL_ROOT)/share/binman/help.txt
+
+.PHONY : uninstall
+uninstall:
+	echo "Uninstalling binman from $(INSTALL_ROOT).."
+	mkdir -p $(INSTALL_ROOT)/{bin/binman,share/binman}
+	rm -f $(INSTALL_ROOT)/bin/binman
+	rm -rf $(INSTALL_ROOT)/share/binman/
+
+.PHONY : test
+test:
+	echo "$(OBJS)"
 
