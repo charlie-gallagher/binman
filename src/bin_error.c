@@ -2,8 +2,8 @@
 #include <bin_error.h>
 
 
+int bin_errno;
 void print_errors(void) {
-    extern int bin_errno;
     switch (bin_errno) {
         case CANNOT_OPEN_TMP: {
             fprintf(stderr, "\nError: Cannot open temporary file\n");
