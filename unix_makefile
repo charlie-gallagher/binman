@@ -17,6 +17,22 @@ LD		:= gcc -o
 CFLAGS	:= -I$(INCDIR) -Wall -g3 # Use incdir, all warnings, add debug info
 LDFLAGS	:= -g3
 
+
+
+
+# Overwrite implicit rule for object files
+# A little dangerous because it always uses the first prerequisite
+%.o: %.c
+	$(CC) $(CFLAGS) -o $(OBJDIR)/$@ $<
+
+# Set up search paths for particular extensions
+vpath %.o $(OBJDIR):.
+
+vpath %.c $(SRCDIR):.
+
+vpath %.h $(INCDIR):.
+
+
 # Quickref
 # $^	prereq list
 # $@	target
@@ -27,26 +43,20 @@ LDFLAGS	:= -g3
 
 all: $(TARGET) # Default rule runs when TARGET is out of date
 
-$(TARGET) : $(OBJDIR)/bin_arg_parse.o $(OBJDIR)/bin_error.o $(OBJDIR)/bin_flow.o $(OBJDIR)/binman.o $(OBJDIR)/bin_ops.o $(OBJDIR)/bin_print.o
-	$(LD) $(LDFLAGS) -o $(TARGET) $^
+$(TARGET) : bin_arg_parse.o bin_error.o bin_flow.o binman.o bin_ops.o bin_print.o
+	$(LD) $(LDFLAGS) -o $@ $(OBJDIR)/*
 
-$(OBJDIR)/bin_arg_parse.o: $(SRCDIR)/bin_arg_parse.c $(INCDIR)/bin_arg_parse.h $(INCDIR)/bin_error.h
-	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_arg_parse.c
+bin_arg_parse.o: bin_arg_parse.c bin_arg_parse.h bin_error.h
 
-$(OBJDIR)/bin_error.o: $(SRCDIR)/bin_error.c $(INCDIR)/bin_error.h
-	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_error.c
+bin_error.o: bin_error.c bin_error.h
 
-$(OBJDIR)/bin_flow.o: $(SRCDIR)/bin_flow.c $(INCDIR)/bin_print.h $(INCDIR)/bin_ops.h $(INCDIR)/bin_arg_parse.h $(INCDIR)/bin_flow.h
-	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_flow.c
+bin_flow.o: bin_flow.c bin_print.h bin_ops.h bin_arg_parse.h bin_flow.h
 
-$(OBJDIR)/binman.o: $(SRCDIR)/binman.c $(INCDIR)/bin_arg_parse.h $(INCDIR)/bin_flow.h $(INCDIR)/bin_error.h $(INCDIR)/bin_print.h
-	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/binman.c
+binman.o: binman.c bin_arg_parse.h bin_flow.h bin_error.h bin_print.h
 
-$(OBJDIR)/bin_ops.o: $(SRCDIR)/bin_ops.c $(INCDIR)/bin_ops.h $(INCDIR)/bin_print.h $(INCDIR)/bin_error.h
-	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_ops.c
+bin_ops.o: bin_ops.c bin_ops.h bin_print.h bin_error.h
 
-$(OBJDIR)/bin_print.o: $(SRCDIR)/bin_print.c $(INCDIR)/bin_ops.h $(INCDIR)/bin_print.h $(INCDIR)/bin_error.h
-	$(CC) $(CFLAGS) -o $@ $(SRCDIR)/bin_print.c
+bin_print.o: bin_print.c bin_ops.h bin_print.h bin_error.h
 
 .PHONY : clean # in case there is ever a file called 'clean'
 # remove object files, keep going if error
