@@ -3,7 +3,7 @@
 # 	:set expandtab?		=> noexpandtab
 
 ifndef INSTALL_ROOT
-INSTALL_ROOT := ./program
+INSTALL_ROOT := /usr/local
 endif
 
 
@@ -14,7 +14,7 @@ SRCDIR	:= src
 OBJDIR 	:= obj
 CC 		:= gcc -c
 LD		:= gcc -o
-CFLAGS	:= -I$(INCDIR) -Wall -g3 # Use incdir, all warnings, add debug info
+CFLAGS	:= -I$(INCDIR) -Wall -g3 -DINSTALL_ROOT='$(INSTALL_ROOT)'
 LDFLAGS	:= -g3
 
 
@@ -56,7 +56,7 @@ binman.o: binman.c bin_arg_parse.h bin_flow.h bin_error.h bin_print.h
 
 bin_ops.o: bin_ops.c bin_ops.h bin_print.h bin_error.h
 
-bin_print.o: bin_print.c bin_ops.h bin_print.h bin_error.h
+bin_print.o: bin_print.c bin_ops.h bin_print.h bin_error.h stringize.h
 
 .PHONY : clean # in case there is ever a file called 'clean'
 # remove object files, keep going if error
@@ -75,7 +75,6 @@ install:
 .PHONY : uninstall
 uninstall:
 	echo "Uninstalling binman from $(INSTALL_ROOT).."
-	mkdir -p $(INSTALL_ROOT)/{bin/binman,share/binman}
 	rm -f $(INSTALL_ROOT)/bin/binman
 	rm -rf $(INSTALL_ROOT)/share/binman/
 
