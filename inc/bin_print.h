@@ -1,7 +1,7 @@
-#ifdef BIN_PRINT
+#ifndef BIN_PRINT
 
-
-#else
+/* Contains a macro to convert macro text to string */
+#include <stringize.h>
 
 #define BIN_PRINT
 
@@ -12,12 +12,21 @@
 #define DUMP 0
 #define WRITE 1
 
-// TODO: Improve ability to find help file, esp. when PATH is set
-#ifdef _MSC_VER
+
+
+
+#if defined INSTALL_ROOT
+#if defined _MSC_VER
+	 #define HELP_FILENAME STRINGIZE_MACRO(INSTALL_ROOT) "\\share\\binman\\help.txt"
+#else
+	 #define HELP_FILENAME STRINGIZE_MACRO(INSTALL_ROOT) "/share/binman/help.txt"
+#endif /* defined _MSC_VER */
+#elif defined _MSC_VER
 	#define HELP_FILENAME "doc\\windows_help.txt"
 #else
-	#define HELP_FILENAME "doc/unix_help.txt"
-#endif
+	#define HELP_FILENAME "./doc/unix_help.txt"
+#endif /* INSTALL_ROOT */
+
 
 /* Print functions */
 int bin_out(FILE *input, FILE *output, char type); // Chooses program flow

@@ -177,6 +177,7 @@ int print_help(void)
     FILE *help;
 
     // Help file location defined in bin_print.h
+    printf("Help filename: " HELP_FILENAME "\n");
     if ((help = fopen(HELP_FILENAME, "r")) == NULL)
     {
         error_msg;
