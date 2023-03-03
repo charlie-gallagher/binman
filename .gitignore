@@ -1,8 +1,7 @@
 notes.md
 *.obj
+*.o
 *.exe
 command_line/**
 *.swp
-obj/
-obj/*
 binman
